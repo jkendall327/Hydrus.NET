@@ -2,13 +2,13 @@
 
 var builder = Host.CreateApplicationBuilder();
 
+builder.Services.Configure<HydrusOptions>(builder.Configuration.GetSection("Hydrus"));
+builder.Services.AddHydrus();
+
 var app = builder.Build();
 
-var baseUrl = builder.Configuration["Hydrus:BaseUrl"];
-var accessKey = builder.Configuration["Hydrus:AccessKey"];
+var client = app.Services.GetRequiredService<HydrusClient>();
 
-var hydrusClient = new HydrusClient(baseUrl, accessKey);
-
-var version = await hydrusClient.Client.GetVersionAsync();
+var version = await client.Client.GetVersionAsync();
 
 Console.WriteLine(version);
