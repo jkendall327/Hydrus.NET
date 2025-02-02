@@ -10,7 +10,7 @@ public record HydrusCookie(
     double? Expires = null);
 
 public record HydrusCookiesResponse(
-    [property: JsonPropertyName("cookies")] Dictionary<string, HydrusCookie> Cookies);
+    [property: JsonPropertyName("cookies")] List<HydrusCookie> Cookies);
 
 internal class CookieJsonConverter : JsonConverter<HydrusCookie>
 {
