@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace Hydrus.NET;
 
 public record HydrusVersion(
