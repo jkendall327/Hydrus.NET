@@ -1,9 +1,37 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <!-- Build Configuration -->
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+
+        <!-- Package Metadata -->
+        <PackageId>Hydrus.NET</PackageId>
+        <Version>0.1.0</Version>
+        <Authors>Jack Kendall</Authors>
+        <Product>Hydrus.NET</Product>
+        <Description>A .NET client library for the Hydrus Network Client API</Description>
+        <PackageTags>hydrus;hydrus-network;api-client</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <RepositoryType>git</RepositoryType>
+
+        <!-- Package Configuration -->
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+
+        <!-- Assembly Information -->
+        <AssemblyVersion>0.1.0.0</AssemblyVersion>
+        <FileVersion>0.1.0.0</FileVersion>
     </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Include README.md in the package -->
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
 
 </Project>
