@@ -1,4 +1,3 @@
-using System.Net.Http.Json;
 using System.Text.Json.Serialization;
 
 namespace Hydrus.NET;
@@ -41,7 +40,7 @@ public class HydrusClientManager
     {
         var response = await _httpClient.GetAsync("api_version");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<HydrusVersion>();
+        return await response.ReadFromHydrusJsonAsync<HydrusVersion>();
     }
 
     /// <summary>
@@ -71,7 +70,7 @@ public class HydrusClientManager
         var url = $"request_new_permissions?{string.Join("&", queryParams)}";
         var response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<HydrusAccessKey>();
+        return await response.ReadFromHydrusJsonAsync<HydrusAccessKey>();
     }
 
     /// <summary>
@@ -81,7 +80,7 @@ public class HydrusClientManager
     {
         var response = await _httpClient.GetAsync("session_key");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<HydrusSessionKey>();
+        return await response.ReadFromHydrusJsonAsync<HydrusSessionKey>();
     }
 
     /// <summary>
@@ -118,7 +117,7 @@ public class HydrusClientManager
         var url = $"get_service?{string.Join("&", queryParams)}";
         var response = await _httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<HydrusServiceResponse>();
+        return await response.ReadFromHydrusJsonAsync<HydrusServiceResponse>();
     }
 
     /// <summary>
@@ -128,6 +127,6 @@ public class HydrusClientManager
     {
         var response = await _httpClient.GetAsync("get_services");
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<HydrusServicesResponse>();
+        return await response.ReadFromHydrusJsonAsync<HydrusServicesResponse>();
     }
 }
