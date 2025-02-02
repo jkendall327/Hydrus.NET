@@ -18,12 +18,14 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
     /// <param name="domain">Domain to get cookies for.</param>
     public async Task<HydrusCookiesResponse> GetCookiesAsync(string domain)
     {
-        ArgumentNullException.ThrowIfNullOrWhiteSpace(domain);
+        ArgumentException.ThrowIfNullOrWhiteSpace(domain);
         
         var url = $"manage_cookies/get_cookies?domain={Uri.EscapeDataString(domain)}";
 
         var response = await httpClient.GetAsync(url);
+
         response.EnsureSuccessStatusCode();
+        
         return await response.ReadFromHydrusJsonAsync<HydrusCookiesResponse>();
     }
 
