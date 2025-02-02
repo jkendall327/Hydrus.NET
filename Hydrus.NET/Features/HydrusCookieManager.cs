@@ -15,14 +15,12 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
     /// <summary>
     /// Get all cookies for a specific domain or all domains.
     /// </summary>
-    /// <param name="domain">Optional domain to get cookies for. If not provided, returns cookies for all domains.</param>
-    public async Task<HydrusCookiesResponse> GetCookiesAsync(string? domain = null)
+    /// <param name="domain">Domain to get cookies for.</param>
+    public async Task<HydrusCookiesResponse> GetCookiesAsync(string domain)
     {
-        var url = "manage_cookies/get_cookies";
-        if (!string.IsNullOrEmpty(domain))
-        {
-            url += $"?domain={Uri.EscapeDataString(domain)}";
-        }
+        ArgumentNullException.ThrowIfNullOrWhiteSpace(domain);
+        
+        var url = $"manage_cookies/get_cookies?domain={Uri.EscapeDataString(domain)}";
 
         var response = await httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
