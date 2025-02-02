@@ -2,8 +2,11 @@
 
 var builder = Host.CreateApplicationBuilder();
 
-builder.Services.Configure<HydrusOptions>(builder.Configuration.GetSection("Hydrus"));
-builder.Services.AddHydrus();
+builder.Services.AddHydrus(c =>
+{
+    c.BaseUrl = builder.Configuration["Hydrus:BaseUrl"];
+    c.AccessKey = builder.Configuration["Hydrus:AccessKey"];
+});
 
 var app = builder.Build();
 
