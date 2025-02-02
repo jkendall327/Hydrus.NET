@@ -1,14 +1,56 @@
+using System.Text.Json;
+
 namespace Hydrus.NET;
 
 public record HydrusCookie(
-    [property: JsonPropertyName("name")] string Name,
-    [property: JsonPropertyName("value")] string Value,
-    [property: JsonPropertyName("domain")] string Domain,
-    [property: JsonPropertyName("path")] string Path,
-    [property: JsonPropertyName("expires")] double? Expires = null);
+    string Name,
+    string Value,
+    string Domain,
+    string Path,
+    double? Expires = null);
 
 public record HydrusCookiesResponse(
     [property: JsonPropertyName("cookies")] Dictionary<string, HydrusCookie> Cookies);
+
+internal class CookieJsonConverter : JsonConverter<HydrusCookie>
+{
+    public static readonly CookieJsonConverter Instance = new();
+    public override HydrusCookie Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        if (reader.TokenType != JsonTokenType.StartArray)
+            throw new JsonException("Expected start of array");
+
+        reader.Read();
+        var name = reader.GetString();
+        reader.Read();
+        var value = reader.GetString();
+        reader.Read();
+        var domain = reader.GetString();
+        reader.Read();
+        var path = reader.GetString();
+        reader.Read();
+        var expiration = reader.GetDouble();
+        reader.Read(); // consume EndArray
+
+        return new(name, value, domain, path, expiration);
+    }
+
+    public override void Write(Utf8JsonWriter writer, HydrusCookie cookie, JsonSerializerOptions options)
+    {
+        writer.WriteStartArray();
+        writer.WriteStringValue(cookie.Name);
+        writer.WriteStringValue(cookie.Value);
+        writer.WriteStringValue(cookie.Domain);
+        writer.WriteStringValue(cookie.Path);
+        
+        if (cookie.Expires.HasValue)
+        {
+            writer.WriteNumberValue(cookie.Expires.Value);
+        }
+        
+        writer.WriteEndArray();
+    }
+}
 
 public sealed class HydrusCookieManager(HttpClient httpClient)
 {
@@ -26,7 +68,10 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
 
         response.EnsureSuccessStatusCode();
         
-        return await response.ReadFromHydrusJsonAsync<HydrusCookiesResponse>();
+        return await response.ReadFromHydrusJsonAsync<HydrusCookiesResponse>(new()
+        {
+            Converters = { CookieJsonConverter.Instance }
+        });
     }
 
     /// <summary>
