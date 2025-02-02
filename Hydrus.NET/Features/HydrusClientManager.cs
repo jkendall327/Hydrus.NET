@@ -24,21 +24,14 @@ public record HydrusServiceResponse(
 public record HydrusServicesResponse(
     [property: JsonPropertyName("services")] Dictionary<string, HydrusService> Services);
 
-public class HydrusClientManager
+public sealed class HydrusClientManager(HttpClient httpClient)
 {
-    private readonly HttpClient _httpClient;
-
-    public HydrusClientManager(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
     /// <summary>
     /// Gets the current API version and hydrus client version.
     /// </summary>
     public async Task<HydrusVersion> GetVersionAsync()
     {
-        var response = await _httpClient.GetAsync("api_version");
+        var response = await httpClient.GetAsync("api_version");
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusVersion>();
     }
@@ -68,7 +61,7 @@ public class HydrusClientManager
         }
 
         var url = $"request_new_permissions?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusAccessKey>();
     }
@@ -78,7 +71,7 @@ public class HydrusClientManager
     /// </summary>
     public async Task<HydrusSessionKey> GetSessionKeyAsync()
     {
-        var response = await _httpClient.GetAsync("session_key");
+        var response = await httpClient.GetAsync("session_key");
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusSessionKey>();
     }
@@ -88,7 +81,7 @@ public class HydrusClientManager
     /// </summary>
     public async Task<bool> VerifyAccessKeyAsync()
     {
-        var response = await _httpClient.GetAsync("verify_access_key");
+        var response = await httpClient.GetAsync("verify_access_key");
         return response.IsSuccessStatusCode;
     }
 
@@ -115,7 +108,7 @@ public class HydrusClientManager
         }
 
         var url = $"get_service?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await httpClient.GetAsync(url);
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusServiceResponse>();
     }
@@ -125,7 +118,7 @@ public class HydrusClientManager
     /// </summary>
     public async Task<HydrusServicesResponse> GetServicesAsync()
     {
-        var response = await _httpClient.GetAsync("get_services");
+        var response = await httpClient.GetAsync("get_services");
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusServicesResponse>();
     }
