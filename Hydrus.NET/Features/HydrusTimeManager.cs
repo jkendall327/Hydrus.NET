@@ -20,7 +20,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
     /// <param name="viewtime">How long the user viewed the file for in seconds</param>
     public async Task IncrementFileViewtimeAsync(
         HydrusFiles files,
-        int canvasType,
+        CanvasTypes canvasType,
         double? timestamp = null,
         long? timestampMs = null,
         int? views = null,
@@ -62,7 +62,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
     /// <param name="viewtime">Total view time in seconds to set</param>
     public async Task SetFileViewtimeAsync(
         HydrusFiles files,
-        int canvasType,
+        CanvasTypes canvasType,
         int views,
         float viewtime,
         double? timestamp = null,
@@ -104,7 +104,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
     /// <param name="domain">Required for web domain modified times, the domain being edited</param>
     public async Task SetTimeAsync(
         HydrusFiles files,
-        int timestampType,
+        TimestampTypes timestampType,
         double? timestamp = null,
         long? timestampMs = null,
         string? fileServiceKey = null,
@@ -139,21 +139,21 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
         response.EnsureSuccessStatusCode();
     }
 
-    public static class TimestampTypes
+    public enum TimestampTypes
     {
-        public const int FileModifiedTimeWebDomain = 0;
-        public const int FileModifiedTimeHardDrive = 1;
-        public const int FileImportTime = 3;
-        public const int FileDeleteTime = 4;
-        public const int ArchivedTime = 5;
-        public const int LastViewed = 6;
-        public const int FileOriginallyImportedTime = 7;
+        FileModifiedTimeWebDomain = 0,
+        FileModifiedTimeHardDrive = 1,
+        FileImportTime = 3,
+        FileDeleteTime = 4,
+        ArchivedTime = 5,
+        LastViewed = 6,
+        FileOriginallyImportedTime = 7
     }
 
-    public static class CanvasTypes 
+    public enum CanvasTypes 
     {
-        public const int MediaViewer = 0;
-        public const int PreviewViewer = 1;
-        public const int ClientApiViewer = 4;
+        MediaViewer = 0,
+        PreviewViewer = 1,
+        ClientApiViewer = 4
     }
 }
