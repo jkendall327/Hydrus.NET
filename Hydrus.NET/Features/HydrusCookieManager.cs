@@ -83,6 +83,9 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("manage_cookies/set_cookies", new
         {
             cookies
+        }, new JsonSerializerOptions
+        {
+            Converters = { CookieJsonConverter.Instance }
         });
         
         response.EnsureSuccessStatusCode();
