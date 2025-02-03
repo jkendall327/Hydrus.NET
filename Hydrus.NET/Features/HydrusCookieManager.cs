@@ -87,25 +87,4 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
         
         response.EnsureSuccessStatusCode();
     }
-
-    /// <summary>
-    /// Remove cookies that match the given parameters.
-    /// </summary>
-    /// <param name="name">Optional cookie name to match</param>
-    /// <param name="domain">Optional domain to match</param>
-    /// <param name="path">Optional path to match</param>
-    public async Task DeleteCookiesAsync(string? name = null, string? domain = null, string? path = null)
-    {
-        var requestContent = new Dictionary<string, object>();
-
-        if (!string.IsNullOrEmpty(name))
-            requestContent["name"] = name;
-        if (!string.IsNullOrEmpty(domain))
-            requestContent["domain"] = domain;
-        if (!string.IsNullOrEmpty(path))
-            requestContent["path"] = path;
-
-        var response = await httpClient.PostAsJsonAsync("manage_cookies/delete_cookies", requestContent);
-        response.EnsureSuccessStatusCode();
-    }
 }
