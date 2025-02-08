@@ -87,6 +87,8 @@ public sealed class HydrusCookieManager(HttpClient httpClient)
         {
             Converters = { CookieJsonConverter.Instance }
         });
+
+        var body = await response.Content.ReadAsStringAsync();
         
         response.EnsureSuccessStatusCode();
     }

@@ -12,10 +12,6 @@ var app = builder.Build();
 
 var client = app.Services.GetRequiredService<HydrusClient>();
 
-await TestClientManagement(client);
-
-await TestCookies(client);
-
 await TestTimes(client.Times);
 
 await TestRatings(client);
@@ -74,18 +70,4 @@ async Task TestTimes(HydrusTimeManager timeManager)
         timestampType: HydrusTimeManager.TimestampTypes.FileImportTime,
         timestamp: DateTimeOffset.UtcNow.ToUnixTimeSeconds()
     );
-}
-
-async Task TestClientManagement(HydrusClient hydrusClient)
-{
-    var hydrusVersion = await hydrusClient.Client.GetVersionAsync();
-    
-    Console.WriteLine(hydrusVersion);
-}
-
-async Task TestCookies(HydrusClient hydrusClient)
-{
-    var cookie = new HydrusCookie("PHPSESSID", "07669eb2a1a6e840e498bb6e0799f3fb", "somesite.com", "/", 1627327719);
-    await hydrusClient.Cookies.SetCookiesAsync([cookie]);
-    var u = await hydrusClient.Cookies.GetCookiesAsync("somesite.com");
 }

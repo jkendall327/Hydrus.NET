@@ -2,7 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Hydrus.NET.Tests;
 
-public class TestClientCreator
+public static class TestClientCreator
 {
     public static HydrusClient CreateClient(
         string baseUrl = "http://127.0.0.1:45869/", 
