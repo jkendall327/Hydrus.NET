@@ -10,9 +10,7 @@ Because it's hard to write meaningful tests for this kind of library, the .Tests
 As such, they don't run in CI at present.
 In the future, I might try to implement 'real' integration tests by spinning up an instance of the client in a container.
 
-## Installation
-
-To install Hydrus.NET, clone the repository and build the project using your preferred C# development environment.
+## Building
 
 ```bash
 git clone https://github.com/yourusername/Hydrus.NET.git
@@ -21,6 +19,12 @@ dotnet build
 ```
 
 ## Usage
+
+NOTE: the package is not yet on NuGet.
+
+```
+dotnet add package Hydrus.NET
+```
 
 ```csharp
 using Hydrus.NET;
