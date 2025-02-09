@@ -28,4 +28,14 @@ public class UrlManagerTests
         response.NormalisedUrl.ShouldBe(url);
         response.UrlType.ShouldBe(UrlTypes.File);
     }
+
+    [Fact]
+    public async Task CanAddSimpleUrl()
+    {
+        var url = "https://i.imgur.com/CLu1Svx.jpeg";
+        
+        var response = await _sut.Urls.AddUrlAsync(url);
+
+        response.HumanResultText.ShouldContain("success");
+    }
 }

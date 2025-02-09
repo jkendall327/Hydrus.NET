@@ -98,25 +98,37 @@ public sealed class HydrusUrlManager(HttpClient httpClient)
         };
 
         if (destinationPageKey != null)
+        {
             requestContent["destination_page_key"] = destinationPageKey;
-            
+        }
+
         if (destinationPageName != null)
+        {
             requestContent["destination_page_name"] = destinationPageName;
-            
+        }
+
         if (fileServiceKey != null)
+        {
             requestContent["file_service_key"] = fileServiceKey;
-            
+        }
+
         if (showDestinationPage.HasValue)
+        {
             requestContent["show_destination_page"] = showDestinationPage.Value;
-            
+        }
+
         if (serviceKeysToAdditionalTags != null)
+        {
             requestContent["service_keys_to_additional_tags"] = serviceKeysToAdditionalTags;
-            
+        }
+
         if (filterableTags != null)
+        {
             requestContent["filterable_tags"] = filterableTags;
+        }
 
         var response = await httpClient.PostAsJsonAsync("add_urls/add_url", requestContent);
-        response.EnsureSuccessStatusCode();
+        
         return await response.ReadFromHydrusJsonAsync<HydrusUrlAddResponse>();
     }
 }
