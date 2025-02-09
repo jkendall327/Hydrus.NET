@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.WebUtilities;
+
 namespace Hydrus.NET;
 
 public record HydrusUrlResponse(
@@ -28,18 +30,24 @@ public sealed class HydrusUrlManager(HttpClient httpClient)
     /// </summary>
     /// <param name="url">The URL to query about</param>
     /// <param name="doublecheckFileSystem">Whether to verify 'already in db' results against the actual file system</param>
-    public async Task<HydrusUrlResponse> GetUrlFilesAsync(string url, bool? doublecheckFileSystem = null)
+    public async Task<HydrusUrlResponse> GetUrlFilesAsync(string url, bool doublecheckFileSystem = false)
     {
-        var queryParams = new List<string> { $"url={Uri.EscapeDataString(url)}" };
-
-        if (doublecheckFileSystem.HasValue)
+        var uri = "add_urls/get_url_files";
+        
+        var args = new Dictionary<string, string?>
         {
-            queryParams.Add($"doublecheck_file_system={doublecheckFileSystem.Value.ToString().ToLower()}");
-        }
-
-        var requestUrl = $"add_urls/get_url_files?{string.Join("&", queryParams)}";
-        var response = await httpClient.GetAsync(requestUrl);
-        response.EnsureSuccessStatusCode();
+            {
+                "url", url
+            },
+            {
+                "doublecheck_file_system", doublecheckFileSystem.ToString().ToLower()
+            }
+        };
+        
+        var query = QueryHelpers.AddQueryString(uri, args);
+        
+        var response = await httpClient.GetAsync(query);
+        
         return await response.ReadFromHydrusJsonAsync<HydrusUrlResponse>();
     }
 
