@@ -73,58 +73,82 @@ public sealed class HydrusUrlManager(HttpClient httpClient)
         return await response.ReadFromHydrusJsonAsync<HydrusUrlInfo>();
     }
 
+    public class UrlImportRequest
+    {
+        /// <summary>
+        /// The URL to add.
+        /// </summary>
+        public required string Url { get; init; }
+        
+        /// <summary>
+        /// Optional page identifier for the page to receive the URL.
+        /// </summary>
+        public string? DestinationPageKey { get; init; }
+        
+        /// <summary>
+        /// Optional page name to receive the URL
+        /// </summary>
+        public string? DestinationPageName { get; init; }
+        
+        /// <summary>
+        /// Optional file service key to set where to import the file.
+        /// </summary>
+        public string? FileServiceKey { get; init; }
+        
+        /// <summary>
+        /// Whether the UI should change pages on add.
+        /// </summary>
+        public bool? ShowDestinationPage { get; init; }
+        
+        /// <summary>
+        /// Optional tags to give to any files imported from this URL.
+        /// </summary>
+        public Dictionary<string, IEnumerable<string>>? ServiceKeysToAdditionalTags { get; init; }
+        
+        /// <summary>
+        /// Optional tags to be filtered by any tag import options that applies to the URL.
+        /// </summary>
+        public IEnumerable<string>? FilterableTags { get; init; }
+    }
+
     /// <summary>
     /// Tell the client to 'import' a URL. This triggers the exact same routine as drag-and-dropping a text URL onto the main client window.
     /// </summary>
-    /// <param name="url">The URL to add</param>
-    /// <param name="destinationPageKey">Optional page identifier for the page to receive the URL</param>
-    /// <param name="destinationPageName">Optional page name to receive the URL</param>
-    /// <param name="fileServiceKey">Optional file service key to set where to import the file</param>
-    /// <param name="showDestinationPage">Whether the UI should change pages on add</param>
-    /// <param name="serviceKeysToAdditionalTags">Optional tags to give to any files imported from this URL</param>
-    /// <param name="filterableTags">Optional tags to be filtered by any tag import options that applies to the URL</param>
-    public async Task<HydrusUrlAddResponse> AddUrlAsync(
-        string url,
-        string? destinationPageKey = null,
-        string? destinationPageName = null,
-        string? fileServiceKey = null,
-        bool? showDestinationPage = null,
-        Dictionary<string, IEnumerable<string>>? serviceKeysToAdditionalTags = null,
-        IEnumerable<string>? filterableTags = null)
+    public async Task<HydrusUrlAddResponse> AddUrlAsync(UrlImportRequest request)
     {
         var requestContent = new Dictionary<string, object>
         {
-            ["url"] = url
+            ["url"] = request.Url
         };
 
-        if (destinationPageKey != null)
+        if (request.DestinationPageKey != null)
         {
-            requestContent["destination_page_key"] = destinationPageKey;
+            requestContent["destination_page_key"] = request.DestinationPageKey;
         }
 
-        if (destinationPageName != null)
+        if (request.DestinationPageName != null)
         {
-            requestContent["destination_page_name"] = destinationPageName;
+            requestContent["destination_page_name"] = request.DestinationPageName;
         }
 
-        if (fileServiceKey != null)
+        if (request.FileServiceKey != null)
         {
-            requestContent["file_service_key"] = fileServiceKey;
+            requestContent["file_service_key"] = request.FileServiceKey;
         }
 
-        if (showDestinationPage.HasValue)
+        if (request.ShowDestinationPage.HasValue)
         {
-            requestContent["show_destination_page"] = showDestinationPage.Value;
+            requestContent["show_destination_page"] = request.ShowDestinationPage.Value;
         }
 
-        if (serviceKeysToAdditionalTags != null)
+        if (request.ServiceKeysToAdditionalTags != null)
         {
-            requestContent["service_keys_to_additional_tags"] = serviceKeysToAdditionalTags;
+            requestContent["service_keys_to_additional_tags"] = request.ServiceKeysToAdditionalTags;
         }
 
-        if (filterableTags != null)
+        if (request.FilterableTags != null)
         {
-            requestContent["filterable_tags"] = filterableTags;
+            requestContent["filterable_tags"] = request.FilterableTags;
         }
 
         var response = await httpClient.PostAsJsonAsync("add_urls/add_url", requestContent);

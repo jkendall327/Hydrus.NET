@@ -34,7 +34,10 @@ public class UrlManagerTests
     {
         var url = "https://i.imgur.com/CLu1Svx.jpeg";
         
-        var response = await _sut.Urls.AddUrlAsync(url);
+        var response = await _sut.Urls.AddUrlAsync(new()
+        {
+            Url = url
+        });
 
         response.HumanResultText.ShouldContain("success");
     }
