@@ -14,7 +14,7 @@ public record HydrusUrlFileStatus(
 public record HydrusUrlInfo(
     [property: JsonPropertyName("request_url")] string RequestUrl,
     [property: JsonPropertyName("normalised_url")] string NormalisedUrl,
-    [property: JsonPropertyName("url_type")] int UrlType,
+    [property: JsonPropertyName("url_type")] UrlTypes UrlType,
     [property: JsonPropertyName("url_type_string")] string UrlTypeString,
     [property: JsonPropertyName("match_name")] string MatchName,
     [property: JsonPropertyName("can_parse")] bool CanParse);
@@ -22,6 +22,15 @@ public record HydrusUrlInfo(
 public record HydrusUrlAddResponse(
     [property: JsonPropertyName("human_result_text")] string HumanResultText,
     [property: JsonPropertyName("normalised_url")] string NormalisedUrl);
+
+public enum UrlTypes
+{
+    Post = 0,
+    File = 2,
+    Gallery = 3,
+    Watchable = 4,
+    Unknown = 5,
+}
 
 public sealed class HydrusUrlManager(HttpClient httpClient)
 {
@@ -57,9 +66,10 @@ public sealed class HydrusUrlManager(HttpClient httpClient)
     /// <param name="url">The URL to get information about</param>
     public async Task<HydrusUrlInfo> GetUrlInfoAsync(string url)
     {
-        var requestUrl = $"add_urls/get_url_info?url={Uri.EscapeDataString(url)}";
+        var requestUrl = QueryHelpers.AddQueryString("add_urls/get_url_info", "url", url);
+
         var response = await httpClient.GetAsync(requestUrl);
-        response.EnsureSuccessStatusCode();
+        
         return await response.ReadFromHydrusJsonAsync<HydrusUrlInfo>();
     }
 
@@ -108,14 +118,5 @@ public sealed class HydrusUrlManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("add_urls/add_url", requestContent);
         response.EnsureSuccessStatusCode();
         return await response.ReadFromHydrusJsonAsync<HydrusUrlAddResponse>();
-    }
-
-    public static class UrlTypes
-    {
-        public const int Post = 0;
-        public const int File = 2;
-        public const int Gallery = 3;
-        public const int Watchable = 4;
-        public const int Unknown = 5;
     }
 }

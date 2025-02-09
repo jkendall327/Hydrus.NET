@@ -17,4 +17,15 @@ public class UrlManagerTests
         
         response.UrlFileStatuses.Length.ShouldBe(1);
     }
+    
+    [Fact]
+    public async Task CanGetInfoForKnownUrl()
+    {
+        var url = "https://i.imgur.com/CLu1Svx.jpeg";
+        
+        var response = await _sut.Urls.GetUrlInfoAsync(url);
+        
+        response.NormalisedUrl.ShouldBe(url);
+        response.UrlType.ShouldBe(UrlTypes.File);
+    }
 }
