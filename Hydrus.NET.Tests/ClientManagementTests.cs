@@ -10,6 +10,6 @@ public class ClientManagementTests
     public async Task CanGetClientVersion()
     {
         var version = await _sut.Client.GetVersionAsync();
-        version.Version.ShouldBe(72);
+        version.Version.ShouldBe(78);
     }
 }
