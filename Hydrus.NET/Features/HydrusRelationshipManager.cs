@@ -1,39 +1,48 @@
 namespace Hydrus.NET;
 
 public record HydrusRelationshipStatus(
-    [property: JsonPropertyName("is_king")] bool IsKing,
+    [property: JsonPropertyName("is_king")]
+    bool IsKing,
     [property: JsonPropertyName("king")] string King,
-    [property: JsonPropertyName("king_is_on_file_domain")] bool KingIsOnFileDomain,
-    [property: JsonPropertyName("king_is_local")] bool KingIsLocal,
+    [property: JsonPropertyName("king_is_on_file_domain")]
+    bool KingIsOnFileDomain,
+    [property: JsonPropertyName("king_is_local")]
+    bool KingIsLocal,
     [property: JsonPropertyName("0")] string[] PotentialDuplicates,
     [property: JsonPropertyName("1")] string[] FalsePositives,
     [property: JsonPropertyName("3")] string[] Alternates,
     [property: JsonPropertyName("8")] string[] Duplicates);
 
 public record HydrusFileRelationshipsResponse(
-    [property: JsonPropertyName("file_relationships")] Dictionary<string, HydrusRelationshipStatus> FileRelationships);
+    [property: JsonPropertyName("file_relationships")]
+    Dictionary<string, HydrusRelationshipStatus> FileRelationships);
 
 public record HydruspotentialDuplicatesCountResponse(
-    [property: JsonPropertyName("potential_duplicates_count")] int PotentialDuplicatesCount);
+    [property: JsonPropertyName("potential_duplicates_count")]
+    int PotentialDuplicatesCount);
 
 public record HydrusPotentialDuplicatePairsResponse(
-    [property: JsonPropertyName("potential_duplicate_pairs")] string[][] PotentialDuplicatePairs);
+    [property: JsonPropertyName("potential_duplicate_pairs")]
+    string[][] PotentialDuplicatePairs);
 
 public record HydrusRandomPotentialDuplicatesResponse(
-    [property: JsonPropertyName("random_potential_duplicate_hashes")] string[] RandomPotentialDuplicateHashes);
+    [property: JsonPropertyName("random_potential_duplicate_hashes")]
+    string[] RandomPotentialDuplicateHashes);
 
 public record HydrusSetFileRelationship(
     [property: JsonPropertyName("hash_a")] string HashA,
     [property: JsonPropertyName("hash_b")] string HashB,
-    [property: JsonPropertyName("relationship")] int Relationship,
-    [property: JsonPropertyName("do_default_content_merge")] bool DoDefaultContentMerge,
-    [property: JsonPropertyName("delete_a")] bool? DeleteA = null,
-    [property: JsonPropertyName("delete_b")] bool? DeleteB = null);
+    [property: JsonPropertyName("relationship")]
+    int Relationship,
+    [property: JsonPropertyName("do_default_content_merge")]
+    bool DoDefaultContentMerge,
+    [property: JsonPropertyName("delete_a")]
+    bool? DeleteA = null,
+    [property: JsonPropertyName("delete_b")]
+    bool? DeleteB = null);
 
-public sealed class HydrusRelationshipManager
+public sealed class HydrusRelationshipManager(HttpClient client)
 {
-    private readonly HttpClient _httpClient;
-
     public static class RelationshipType
     {
         public const int SetAsPotentialDuplicates = 0;
@@ -56,11 +65,6 @@ public sealed class HydrusRelationshipManager
         public const int MustBePixelDuplicates = 0;
         public const int CanBePixelDuplicates = 1;
         public const int MustNotBePixelDuplicates = 2;
-    }
-
-    public HydrusRelationshipManager(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
     }
 
     /// <summary>
@@ -100,8 +104,9 @@ public sealed class HydrusRelationshipManager
         }
 
         var url = $"manage_file_relationships/get_file_relationships?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
+
         return await response.ReadFromHydrusJsonAsync<HydrusFileRelationshipsResponse>();
     }
 
@@ -157,8 +162,9 @@ public sealed class HydrusRelationshipManager
         queryParams.Add($"max_hamming_distance={maxHammingDistance}");
 
         var url = $"manage_file_relationships/get_potentials_count?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
+
         return await response.ReadFromHydrusJsonAsync<HydruspotentialDuplicatesCountResponse>();
     }
 
@@ -221,8 +227,9 @@ public sealed class HydrusRelationshipManager
         queryParams.Add($"max_hamming_distance={maxHammingDistance}");
 
         var url = $"manage_file_relationships/get_potential_pairs?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
+
         return await response.ReadFromHydrusJsonAsync<HydrusPotentialDuplicatePairsResponse>();
     }
 
@@ -278,8 +285,9 @@ public sealed class HydrusRelationshipManager
         queryParams.Add($"max_hamming_distance={maxHammingDistance}");
 
         var url = $"manage_file_relationships/get_random_potentials?{string.Join("&", queryParams)}";
-        var response = await _httpClient.GetAsync(url);
+        var response = await client.GetAsync(url);
         response.EnsureSuccessStatusCode();
+
         return await response.ReadFromHydrusJsonAsync<HydrusRandomPotentialDuplicatesResponse>();
     }
 
@@ -311,7 +319,7 @@ public sealed class HydrusRelationshipManager
             requestContent["hashes"] = files.Hashes;
         }
 
-        var response = await _httpClient.PostAsJsonAsync("manage_file_relationships/remove_potentials", requestContent);
+        var response = await client.PostAsJsonAsync("manage_file_relationships/remove_potentials", requestContent);
         response.EnsureSuccessStatusCode();
     }
 
@@ -326,9 +334,8 @@ public sealed class HydrusRelationshipManager
             ["relationships"] = relationships
         };
 
-        var response = await _httpClient
-            .PostAsJsonAsync("manage_file_relationships/set_file_relationships", requestContent);
-        
+        var response = await client.PostAsJsonAsync("manage_file_relationships/set_file_relationships", requestContent);
+
         response.EnsureSuccessStatusCode();
     }
 
@@ -342,31 +349,10 @@ public sealed class HydrusRelationshipManager
     /// If a file is already king (also true for files with no duplicates), this is idempotent.
     /// If multiple files from the same group are specified, the latter will be king at the end.
     /// </remarks>
-    public async Task SetKingsAsync(HydrusFiles files)
+    public async Task SetKingsAsync(HydrusFiles files, CancellationToken cancellationToken = default)
     {
-        var requestContent = new Dictionary<string, object>();
+        var request = files.ToDictionary();
 
-        if (files.FileId.HasValue)
-        {
-            requestContent["file_id"] = files.FileId.Value;
-        }
-
-        if (files.FileIds != null)
-        {
-            requestContent["file_ids"] = files.FileIds;
-        }
-
-        if (files.Hash != null)
-        {
-            requestContent["hash"] = files.Hash;
-        }
-
-        if (files.Hashes != null)
-        {
-            requestContent["hashes"] = files.Hashes;
-        }
-
-        var response = await _httpClient.PostAsJsonAsync("manage_file_relationships/set_kings", requestContent);
-        response.EnsureSuccessStatusCode();
+        await client.PostToHydrusAsync("manage_file_relationships/set_kings", request, cancellationToken);
     }
 }
