@@ -6,9 +6,9 @@ namespace Hydrus.NET.Tests;
 
 public sealed class HydrusContainerFixture : IAsyncLifetime
 {
-    public IContainer Container { get; private set; } = null!;
-    public string Host => Container.Hostname;
-    public int Port => Container.GetMappedPublicPort(45869);
+    private IContainer Container { get; set; } = null!;
+    private string Host => Container.Hostname;
+    private int Port => Container.GetMappedPublicPort(45869);
 
     public async ValueTask InitializeAsync()
     {
