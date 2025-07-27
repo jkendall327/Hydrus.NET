@@ -74,16 +74,30 @@ public sealed class HydrusRelationshipManager
         var queryParams = new List<string>();
 
         if (files.FileId.HasValue)
+        {
             queryParams.Add($"file_id={files.FileId.Value}");
+        }
+
         if (files.FileIds != null)
+        {
             queryParams.Add(
                 $"file_ids={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(files.FileIds))}");
+        }
+
         if (files.Hash != null)
+        {
             queryParams.Add($"hash={Uri.EscapeDataString(files.Hash)}");
+        }
+
         if (files.Hashes != null)
+        {
             queryParams.Add($"hashes={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(files.Hashes))}");
+        }
+
         if (fileServiceKey != null)
+        {
             queryParams.Add($"file_service_key={Uri.EscapeDataString(fileServiceKey)}");
+        }
 
         var url = $"manage_file_relationships/get_file_relationships?{string.Join("&", queryParams)}";
         var response = await _httpClient.GetAsync(url);
@@ -114,15 +128,29 @@ public sealed class HydrusRelationshipManager
         var queryParams = new List<string>();
 
         if (fileServiceKey != null)
+        {
             queryParams.Add($"file_service_key={Uri.EscapeDataString(fileServiceKey)}");
+        }
+
         if (tagServiceKey1 != null)
+        {
             queryParams.Add($"tag_service_key_1={Uri.EscapeDataString(tagServiceKey1)}");
+        }
+
         if (tags1 != null)
+        {
             queryParams.Add($"tags_1={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags1))}");
+        }
+
         if (tagServiceKey2 != null)
+        {
             queryParams.Add($"tag_service_key_2={Uri.EscapeDataString(tagServiceKey2)}");
+        }
+
         if (tags2 != null)
+        {
             queryParams.Add($"tags_2={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags2))}");
+        }
 
         queryParams.Add($"potentials_search_type={potentialsSearchType}");
         queryParams.Add($"pixel_duplicates={pixelDuplicates}");
@@ -159,17 +187,34 @@ public sealed class HydrusRelationshipManager
         var queryParams = new List<string>();
 
         if (fileServiceKey != null)
+        {
             queryParams.Add($"file_service_key={Uri.EscapeDataString(fileServiceKey)}");
+        }
+
         if (tagServiceKey1 != null)
+        {
             queryParams.Add($"tag_service_key_1={Uri.EscapeDataString(tagServiceKey1)}");
+        }
+
         if (tags1 != null)
+        {
             queryParams.Add($"tags_1={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags1))}");
+        }
+
         if (tagServiceKey2 != null)
+        {
             queryParams.Add($"tag_service_key_2={Uri.EscapeDataString(tagServiceKey2)}");
+        }
+
         if (tags2 != null)
+        {
             queryParams.Add($"tags_2={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags2))}");
+        }
+
         if (maxNumPairs.HasValue)
+        {
             queryParams.Add($"max_num_pairs={maxNumPairs.Value}");
+        }
 
         queryParams.Add($"potentials_search_type={potentialsSearchType}");
         queryParams.Add($"pixel_duplicates={pixelDuplicates}");
@@ -204,15 +249,29 @@ public sealed class HydrusRelationshipManager
         var queryParams = new List<string>();
 
         if (fileServiceKey != null)
+        {
             queryParams.Add($"file_service_key={Uri.EscapeDataString(fileServiceKey)}");
+        }
+
         if (tagServiceKey1 != null)
+        {
             queryParams.Add($"tag_service_key_1={Uri.EscapeDataString(tagServiceKey1)}");
+        }
+
         if (tags1 != null)
+        {
             queryParams.Add($"tags_1={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags1))}");
+        }
+
         if (tagServiceKey2 != null)
+        {
             queryParams.Add($"tag_service_key_2={Uri.EscapeDataString(tagServiceKey2)}");
+        }
+
         if (tags2 != null)
+        {
             queryParams.Add($"tags_2={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(tags2))}");
+        }
 
         queryParams.Add($"potentials_search_type={potentialsSearchType}");
         queryParams.Add($"pixel_duplicates={pixelDuplicates}");
@@ -233,13 +292,24 @@ public sealed class HydrusRelationshipManager
         var requestContent = new Dictionary<string, object>();
 
         if (files.FileId.HasValue)
+        {
             requestContent["file_id"] = files.FileId.Value;
+        }
+
         if (files.FileIds != null)
+        {
             requestContent["file_ids"] = files.FileIds;
+        }
+
         if (files.Hash != null)
+        {
             requestContent["hash"] = files.Hash;
+        }
+
         if (files.Hashes != null)
+        {
             requestContent["hashes"] = files.Hashes;
+        }
 
         var response = await _httpClient.PostAsJsonAsync("manage_file_relationships/remove_potentials", requestContent);
         response.EnsureSuccessStatusCode();
@@ -277,13 +347,24 @@ public sealed class HydrusRelationshipManager
         var requestContent = new Dictionary<string, object>();
 
         if (files.FileId.HasValue)
+        {
             requestContent["file_id"] = files.FileId.Value;
+        }
+
         if (files.FileIds != null)
+        {
             requestContent["file_ids"] = files.FileIds;
+        }
+
         if (files.Hash != null)
+        {
             requestContent["hash"] = files.Hash;
+        }
+
         if (files.Hashes != null)
+        {
             requestContent["hashes"] = files.Hashes;
+        }
 
         var response = await _httpClient.PostAsJsonAsync("manage_file_relationships/set_kings", requestContent);
         response.EnsureSuccessStatusCode();

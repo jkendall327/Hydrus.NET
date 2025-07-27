@@ -94,26 +94,77 @@ public class HydrusPopupManager
     {
         var requestContent = new Dictionary<string, object>();
 
-        if (statusTitle != null) requestContent["status_title"] = statusTitle;
-        if (statusText1 != null) requestContent["status_text_1"] = statusText1;
-        if (statusText2 != null) requestContent["status_text_2"] = statusText2;
-        if (isCancellable.HasValue) requestContent["is_cancellable"] = isCancellable.Value;
-        if (isPausable.HasValue) requestContent["is_pausable"] = isPausable.Value;
-        if (attachedFilesMergable.HasValue) requestContent["attached_files_mergable"] = attachedFilesMergable.Value;
-        if (popupGauge1 != null) requestContent["popup_gauge_1"] = popupGauge1;
-        if (popupGauge2 != null) requestContent["popup_gauge_2"] = popupGauge2;
-        if (apiData != null) requestContent["api_data"] = apiData;
-        if (filesLabel != null) requestContent["files_label"] = filesLabel;
+        if (statusTitle != null)
+        {
+            requestContent["status_title"] = statusTitle;
+        }
+
+        if (statusText1 != null)
+        {
+            requestContent["status_text_1"] = statusText1;
+        }
+
+        if (statusText2 != null)
+        {
+            requestContent["status_text_2"] = statusText2;
+        }
+
+        if (isCancellable.HasValue)
+        {
+            requestContent["is_cancellable"] = isCancellable.Value;
+        }
+
+        if (isPausable.HasValue)
+        {
+            requestContent["is_pausable"] = isPausable.Value;
+        }
+
+        if (attachedFilesMergable.HasValue)
+        {
+            requestContent["attached_files_mergable"] = attachedFilesMergable.Value;
+        }
+
+        if (popupGauge1 != null)
+        {
+            requestContent["popup_gauge_1"] = popupGauge1;
+        }
+
+        if (popupGauge2 != null)
+        {
+            requestContent["popup_gauge_2"] = popupGauge2;
+        }
+
+        if (apiData != null)
+        {
+            requestContent["api_data"] = apiData;
+        }
+
+        if (filesLabel != null)
+        {
+            requestContent["files_label"] = filesLabel;
+        }
+
         if (files != null)
         {
             if (files.FileId.HasValue)
+            {
                 requestContent["file_id"] = files.FileId.Value;
+            }
+
             if (files.FileIds != null)
+            {
                 requestContent["file_ids"] = files.FileIds;
+            }
+
             if (files.Hash != null)
+            {
                 requestContent["hash"] = files.Hash;
+            }
+
             if (files.Hashes != null)
+            {
                 requestContent["hashes"] = files.Hashes;
+            }
         }
 
         var response = await _httpClient.PostAsJsonAsync("manage_popups/add_popup", requestContent);
@@ -221,23 +272,62 @@ public class HydrusPopupManager
             ["job_status_key"] = jobStatusKey
         };
 
-        if (statusTitle != null) requestContent["status_title"] = statusTitle;
-        if (statusText1 != null) requestContent["status_text_1"] = statusText1;
-        if (statusText2 != null) requestContent["status_text_2"] = statusText2;
-        if (popupGauge1 != null) requestContent["popup_gauge_1"] = popupGauge1;
-        if (popupGauge2 != null) requestContent["popup_gauge_2"] = popupGauge2;
-        if (apiData != null) requestContent["api_data"] = apiData;
-        if (filesLabel != null) requestContent["files_label"] = filesLabel;
+        if (statusTitle != null)
+        {
+            requestContent["status_title"] = statusTitle;
+        }
+
+        if (statusText1 != null)
+        {
+            requestContent["status_text_1"] = statusText1;
+        }
+
+        if (statusText2 != null)
+        {
+            requestContent["status_text_2"] = statusText2;
+        }
+
+        if (popupGauge1 != null)
+        {
+            requestContent["popup_gauge_1"] = popupGauge1;
+        }
+
+        if (popupGauge2 != null)
+        {
+            requestContent["popup_gauge_2"] = popupGauge2;
+        }
+
+        if (apiData != null)
+        {
+            requestContent["api_data"] = apiData;
+        }
+
+        if (filesLabel != null)
+        {
+            requestContent["files_label"] = filesLabel;
+        }
+
         if (files != null)
         {
             if (files.FileId.HasValue)
+            {
                 requestContent["file_id"] = files.FileId.Value;
+            }
+
             if (files.FileIds != null)
+            {
                 requestContent["file_ids"] = files.FileIds;
+            }
+
             if (files.Hash != null)
+            {
                 requestContent["hash"] = files.Hash;
+            }
+
             if (files.Hashes != null)
+            {
                 requestContent["hashes"] = files.Hashes;
+            }
         }
 
         var response = await _httpClient.PostAsJsonAsync("manage_popups/update_popup", requestContent);

@@ -33,19 +33,39 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
         };
 
         if (files.FileId.HasValue)
+        {
             requestBody["file_id"] = files.FileId.Value;
+        }
+
         if (files.FileIds != null)
+        {
             requestBody["file_ids"] = files.FileIds;
+        }
+
         if (files.Hash != null)
+        {
             requestBody["hash"] = files.Hash;
+        }
+
         if (files.Hashes != null)
+        {
             requestBody["hashes"] = files.Hashes;
+        }
+
         if (timestamp.HasValue)
+        {
             requestBody["timestamp"] = timestamp.Value;
+        }
+
         if (timestampMs.HasValue)
+        {
             requestBody["timestamp_ms"] = timestampMs.Value;
+        }
+
         if (views.HasValue)
+        {
             requestBody["views"] = views.Value;
+        }
 
         var response = await httpClient.PostAsJsonAsync("edit_times/increment_file_viewtime", requestBody);
         response.EnsureSuccessStatusCode();
@@ -76,17 +96,34 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
         };
 
         if (files.FileId.HasValue)
+        {
             requestBody["file_id"] = files.FileId.Value;
+        }
+
         if (files.FileIds != null)
+        {
             requestBody["file_ids"] = files.FileIds;
+        }
+
         if (files.Hash != null)
+        {
             requestBody["hash"] = files.Hash;
+        }
+
         if (files.Hashes != null)
+        {
             requestBody["hashes"] = files.Hashes;
+        }
+
         if (timestamp.HasValue)
+        {
             requestBody["timestamp"] = timestamp.Value;
+        }
+
         if (timestampMs.HasValue)
+        {
             requestBody["timestamp_ms"] = timestampMs.Value;
+        }
 
         var response = await httpClient.PostAsJsonAsync("edit_times/set_file_viewtime", requestBody);
         response.EnsureSuccessStatusCode();
@@ -117,23 +154,49 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
         };
 
         if (files.FileId.HasValue)
+        {
             requestBody["file_id"] = files.FileId.Value;
+        }
+
         if (files.FileIds != null)
+        {
             requestBody["file_ids"] = files.FileIds;
+        }
+
         if (files.Hash != null)
+        {
             requestBody["hash"] = files.Hash;
+        }
+
         if (files.Hashes != null)
+        {
             requestBody["hashes"] = files.Hashes;
+        }
+
         if (timestamp.HasValue)
+        {
             requestBody["timestamp"] = timestamp.Value;
+        }
+
         if (timestampMs.HasValue)
+        {
             requestBody["timestamp_ms"] = timestampMs.Value;
+        }
+
         if (fileServiceKey != null)
+        {
             requestBody["file_service_key"] = fileServiceKey;
+        }
+
         if (canvasType.HasValue)
+        {
             requestBody["canvas_type"] = canvasType.Value;
+        }
+
         if (domain != null)
+        {
             requestBody["domain"] = domain;
+        }
 
         var response = await httpClient.PostAsJsonAsync("edit_times/set_time", requestBody);
         response.EnsureSuccessStatusCode();

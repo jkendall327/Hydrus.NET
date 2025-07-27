@@ -18,7 +18,9 @@ internal class CookieJsonConverter : JsonConverter<HydrusCookie>
     public override HydrusCookie Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType != JsonTokenType.StartArray)
+        {
             throw new JsonException("Expected start of array");
+        }
 
         reader.Read();
         var name = reader.GetString();

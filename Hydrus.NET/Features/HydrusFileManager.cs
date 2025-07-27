@@ -293,10 +293,14 @@ namespace Hydrus.NET
             var query = new Dictionary<string, object>();
 
             if (fileIds != null)
+            {
                 query["file_ids"] = fileIds;
+            }
 
             if (hashes != null)
+            {
                 query["hashes"] = hashes;
+            }
 
             var queryString = string.Join("&",
                 query.Select(kvp =>
@@ -357,10 +361,14 @@ namespace Hydrus.NET
             };
 
             if (renderFormat.HasValue)
+            {
                 query["render_format"] = renderFormat.Value;
+            }
 
             if (renderQuality.HasValue)
+            {
                 query["render_quality"] = renderQuality.Value;
+            }
 
             if (width.HasValue && height.HasValue)
             {
@@ -415,7 +423,9 @@ namespace Hydrus.NET
         public async Task<string?> GetFilePathAsync(int? fileId = null, string? hash = null)
         {
             if ((fileId == null && hash == null) || (fileId != null && hash != null))
+            {
                 throw new ArgumentException("Provide either fileId or hash, but not both.");
+            }
 
             if (hash is null)
             {
@@ -455,10 +465,14 @@ namespace Hydrus.NET
             var query = new Dictionary<string, object>();
 
             if (fileIds != null)
+            {
                 query["file_ids"] = fileIds;
+            }
 
             if (hashes != null)
+            {
                 query["hashes"] = hashes;
+            }
 
             var queryString = string.Join("&",
                 query.Select(kvp =>
