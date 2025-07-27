@@ -2,16 +2,16 @@ using Shouldly;
 
 namespace Hydrus.NET.Tests;
 
-public class UrlManagerTests
+public class UrlManagerTests(HydrusContainerFixture fixture) : IClassFixture<HydrusContainerFixture>
 {
-    private readonly HydrusClient _sut = TestClientCreator.CreateClient();
-
     [Fact]
     public async Task CanGetFilesForKnownUrl()
     {
         var url = "https://i.imgur.com/CLu1Svx.jpeg";
+
+        var client = fixture.CreateClient();
         
-        var response = await _sut.Urls.GetUrlFilesAsync(url);
+        var response = await client.Urls.GetUrlFilesAsync(url);
         
         response.NormalisedUrl.ShouldBe(url);
         
@@ -23,7 +23,9 @@ public class UrlManagerTests
     {
         var url = "https://i.imgur.com/CLu1Svx.jpeg";
         
-        var response = await _sut.Urls.GetUrlInfoAsync(url);
+        var client = fixture.CreateClient();
+        
+        var response = await client.Urls.GetUrlInfoAsync(url);
         
         response.NormalisedUrl.ShouldBe(url);
         response.UrlType.ShouldBe(UrlTypes.File);
@@ -34,7 +36,9 @@ public class UrlManagerTests
     {
         var url = "https://i.imgur.com/CLu1Svx.jpeg";
         
-        var response = await _sut.Urls.AddUrlAsync(new()
+        var client = fixture.CreateClient();
+        
+        var response = await client.Urls.AddUrlAsync(new()
         {
             Url = url
         });

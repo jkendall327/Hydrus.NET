@@ -2,9 +2,8 @@ using Shouldly;
 
 namespace Hydrus.NET.Tests;
 
-public class CookieManagementTests
+public class CookieManagementTests(HydrusContainerFixture fixture) : IClassFixture<HydrusContainerFixture>
 {
-    private readonly HydrusClient _sut = TestClientCreator.CreateClient();
     
     [Fact]
     public async Task CanRoundtripCookie()
@@ -16,9 +15,11 @@ public class CookieManagementTests
             "/", 
             1627327719);
         
-        await _sut.Cookies.SetCookiesAsync([cookie]);
+        var client = fixture.CreateClient();
         
-        var actual = await _sut.Cookies.GetCookiesAsync("foobar.com");
+        await client.Cookies.SetCookiesAsync([cookie]);
+        
+        var actual = await client.Cookies.GetCookiesAsync("foobar.com");
         
         actual.Cookies.Single().ShouldBe(cookie);
     }
