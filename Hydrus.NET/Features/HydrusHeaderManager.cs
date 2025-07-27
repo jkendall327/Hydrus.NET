@@ -22,13 +22,18 @@ public record HydrusSetUserAgentRequest(
     [property: JsonPropertyName("user-agent")]
     string UserAgent);
 
-public sealed class HydrusHeaderManager(HttpClient httpClient)
+/// <summary>
+/// Exposes methods for managing HTTP headers.
+/// </summary>
+/// <param name="client">The HTTP client to use to make requests to the Hydrus API.</param>
+public sealed class HydrusHeaderManager(HttpClient client)
 {
     /// <summary>
     /// Get the custom HTTP headers for a specific domain or globally.
     /// </summary>
     /// <param name="domain">Optional domain to get headers for. If not provided, returns global headers.</param>
-    public async Task<HydrusHeadersResponse> GetHeadersAsync(string? domain = null)
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
+    public async Task<HydrusHeadersResponse> GetHeadersAsync(string? domain = null, CancellationToken cancellationToken = default)
     {
         var url = Constants.GET_HEADERS;
 
@@ -37,10 +42,7 @@ public sealed class HydrusHeaderManager(HttpClient httpClient)
             url += $"?domain={Uri.EscapeDataString(domain)}";
         }
 
-        var response = await httpClient.GetAsync(url);
-        response.EnsureSuccessStatusCode();
-
-        return await response.ReadFromHydrusJsonAsync<HydrusHeadersResponse>();
+        return await client.GetFromHydrusAsync<HydrusHeadersResponse>(url, cancellationToken);
     }
 
     /// <summary>
@@ -48,22 +50,24 @@ public sealed class HydrusHeaderManager(HttpClient httpClient)
     /// </summary>
     /// <param name="headers">Dictionary of header names to their values and metadata</param>
     /// <param name="domain">Optional domain to set headers for. If not provided, sets global headers.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     public async Task SetHeadersAsync(Dictionary<string, HydrusHeaderValue> headers,
         string? domain = null,
         CancellationToken cancellationToken = default)
     {
         var request = new HydrusSetHeadersRequest(domain, headers);
-        await httpClient.PostToHydrusAsync(Constants.SET_HEADERS, request, cancellationToken);
+        await client.PostToHydrusAsync(Constants.SET_HEADERS, request, cancellationToken);
     }
 
     /// <summary>
     /// Set the global User-Agent header. This method is deprecated - use SetHeaders instead.
     /// </summary>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <param name="userAgent">The User-Agent string to set. Send empty string to reset to default.</param>
     [Obsolete("This method is deprecated. Use SetHeaders instead.")]
     public async Task SetUserAgentAsync(string userAgent, CancellationToken cancellationToken = default)
     {
         var request = new HydrusSetUserAgentRequest(userAgent);
-        await httpClient.PostToHydrusAsync(Constants.SET_USER_AGENT, request, cancellationToken);
+        await client.PostToHydrusAsync(Constants.SET_USER_AGENT, request, cancellationToken);
     }
 }

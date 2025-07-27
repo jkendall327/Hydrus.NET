@@ -15,6 +15,17 @@ internal static class HttpExtensions
 
         return response;
     }
+    
+    internal static async Task<TResponse> GetFromHydrusAsync<TResponse>(this HttpClient client,
+        string url,
+        CancellationToken token)
+    {
+        var response = await client.GetAsync(url, cancellationToken: token);
+
+        response.EnsureSuccessStatusCode();
+
+        return await ReadFromHydrusJsonAsync<TResponse>(response, token: token);
+    }
 
     internal static async Task<T> ReadFromHydrusJsonAsync<T>(this HttpResponseMessage response,
         JsonSerializerOptions? options = null, CancellationToken token = default)
