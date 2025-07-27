@@ -5,58 +5,41 @@ namespace Hydrus.NET;
 /// </summary>
 public class HydrusFiles
 {
-    public int? FileId { get; set; }
-    public int[]? FileIds { get; set; }
-    public string? Hash { get; set; }
-    public string[]? Hashes { get; set; }
+    public int[] FileIds { get; init; } = [];
+    public string[] Hashes { get; init; } = [];
 
     internal Dictionary<string, object> ToDictionary()
     {
-        var requestContent = new Dictionary<string, object>();
-        
-        if (FileId.HasValue)
-        {
-            requestContent["file_id"] = FileId.Value;
-        }
+        var request = new Dictionary<string, object>();
 
-        if (FileIds != null)
-        {
-            requestContent["file_ids"] = FileIds;
-        }
+        AddToDictionary(request);
 
-        if (Hash != null)
-        {
-            requestContent["hash"] = Hash;
-        }
-
-        if (Hashes != null)
-        {
-            requestContent["hashes"] = Hashes;
-        }
-
-        return requestContent;
+        return request;
     }
 
-    internal void AddToDictionary(Dictionary<string, object> dict)
+    internal void AddToDictionary(Dictionary<string, object> request)
     {
-        if (FileId.HasValue)
+        if (FileIds.Length is 0 && Hashes.Length is 0)
         {
-            dict["file_id"] = FileId.Value;
+            throw new InvalidOperationException("At least one file or one hash must be specified.");
+        }
+        
+        if (FileIds.Length is 1)
+        {
+            request["file_id"] = FileIds[0];
+        }
+        else
+        {
+            request["file_ids"] = FileIds;
         }
 
-        if (FileIds != null)
+        if (Hashes.Length is 1)
         {
-            dict["file_ids"] = FileIds;
+            request["hash"] = Hashes[0];
         }
-
-        if (Hash != null)
+        else
         {
-            dict["hash"] = Hash;
-        }
-
-        if (Hashes != null)
-        {
-            dict["hashes"] = Hashes;
+            request["hashes"] = Hashes;
         }
     }
 }
