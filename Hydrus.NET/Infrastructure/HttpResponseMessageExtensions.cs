@@ -2,9 +2,9 @@ using System.Text.Json;
 
 namespace Hydrus.NET;
 
-public static class HttpResponseMessageExtensions
+internal static class HttpResponseMessageExtensions
 {
-    public static async Task<T> ReadFromHydrusJsonAsync<T>(this HttpResponseMessage response, JsonSerializerOptions? options = null)
+    internal static async Task<T> ReadFromHydrusJsonAsync<T>(this HttpResponseMessage response, JsonSerializerOptions? options = null)
     {
         if (!response.IsSuccessStatusCode)
         {
