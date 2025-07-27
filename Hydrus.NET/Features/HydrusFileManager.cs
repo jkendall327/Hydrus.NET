@@ -1,5 +1,3 @@
-using System.Text.Json;
-
 namespace Hydrus.NET;
 
 public record HydrusTag(
@@ -286,27 +284,14 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <summary>
     /// Get file metadata.
     /// </summary>
-    /// <param name="fileIds">List of file IDs.</param>
-    /// <param name="hashes">List of file hashes.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A list of file metadata.</returns>
-    public async Task<List<HydrusFile>> GetFileMetadataAsync(IEnumerable<int>? fileIds = null,
-        IEnumerable<string>? hashes = null,
+    public async Task<List<HydrusFile>> GetFileMetadataAsync(HydrusFiles files,
         CancellationToken cancellationToken = default)
     {
-        var query = new Dictionary<string, object>();
-
-        if (fileIds != null)
-        {
-            query["file_ids"] = fileIds;
-        }
-
-        if (hashes != null)
-        {
-            query["hashes"] = hashes;
-        }
-
-        return await client.GetFromHydrusAsync<List<HydrusFile>>(Constants.FILE_METADATA, query, cancellationToken);
+        return await client.GetFromHydrusAsync<List<HydrusFile>>(Constants.FILE_METADATA,
+            files.ToDictionary(),
+            cancellationToken);
     }
 
     /// <summary>
@@ -325,8 +310,9 @@ public sealed class HydrusFileManager(HttpClient client)
             ["tags"] = tags,
             ["file_domain"] = fileDomain
         };
-        
-        var result = await client.GetFromHydrusAsync<SearchFilesResult>(Constants.FILE_METADATA, request, cancellationToken);
+
+        var result =
+            await client.GetFromHydrusAsync<SearchFilesResult>(Constants.FILE_METADATA, request, cancellationToken);
 
         return result.FileIds;
     }
@@ -408,7 +394,9 @@ public sealed class HydrusFileManager(HttpClient client)
             ["path"] = path
         };
 
-        return await client.GetFromHydrusAsync<Dictionary<string, object>>(Constants.GENERATE_HASHES, requestContent, cancellationToken);
+        return await client.GetFromHydrusAsync<Dictionary<string, object>>(Constants.GENERATE_HASHES,
+            requestContent,
+            cancellationToken);
     }
 
     /// <summary>
@@ -459,26 +447,12 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <param name="hashes">List of file hashes.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A dictionary mapping file hashes to their relationships.</returns>
-    public async Task<Dictionary<string, HydrusFileRelationship>> GetFileRelationshipsAsync(IEnumerable<int>? fileIds =
-            null,
-        IEnumerable<string>? hashes = null,
+    public async Task<Dictionary<string, HydrusFileRelationship>> GetFileRelationshipsAsync(HydrusFiles files,
         CancellationToken cancellationToken = default)
     {
-        var query = new Dictionary<string, object>();
-
-        if (fileIds != null)
-        {
-            query["file_ids"] = fileIds;
-        }
-
-        if (hashes != null)
-        {
-            query["hashes"] = hashes;
-        }
-
         return await client.GetFromHydrusAsync<Dictionary<string, HydrusFileRelationship>>(
             Constants.GET_FILE_RELATIONSHIPS,
-            query,
+            files.ToDictionary(),
             cancellationToken);
     }
 
