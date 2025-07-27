@@ -126,7 +126,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="tags">Dictionary mapping service keys to lists of tags.</param>
     /// <param name="preventSpaceTags">Whether to block any tags intended for namespaces.</param>
     /// <returns>The tags that were actually added or deleted.</returns>
-    public async Task<HydrusTagChanges?> SetTagsAsync(string hash,
+    public async Task<HydrusTagChanges> SetTagsAsync(string hash,
         Dictionary<string, List<string>> tags,
         bool? preventSpaceTags = null)
     {
@@ -144,7 +144,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("add_tags/add_tags", requestContent);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<HydrusTagChanges>();
+        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>();
     }
 
     /// <summary>
@@ -154,7 +154,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="tags">Dictionary mapping service keys to lists of tags.</param>
     /// <param name="preventSpaceTags">Whether to block any tags intended for namespaces.</param>
     /// <returns>The tags that were actually added or deleted.</returns>
-    public async Task<HydrusTagChanges?> SetTagsAsync(int fileId,
+    public async Task<HydrusTagChanges> SetTagsAsync(int fileId,
         Dictionary<string, List<string>> tags,
         bool? preventSpaceTags = null)
     {
@@ -172,7 +172,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("add_tags/add_tags", requestContent);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<HydrusTagChanges>();
+        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>();
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="path">The file path to import.</param>
     /// <param name="deleteAfterSuccess">Whether to delete the source file after successful import.</param>
     /// <returns>The imported file's information.</returns>
-    public async Task<HydrusFile?> AddFileAsync(string path, bool deleteAfterSuccess = false)
+    public async Task<HydrusFile> AddFileAsync(string path, bool deleteAfterSuccess = false)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -229,7 +229,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("add_files/add_file", requestContent);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<HydrusFile>();
+        return await response.ReadFromHydrusJsonAsync<HydrusFile>();
     }
 
     /// <summary>
@@ -274,7 +274,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="fileIds">List of file IDs.</param>
     /// <param name="hashes">List of file hashes.</param>
     /// <returns>A list of file metadata.</returns>
-    public async Task<List<HydrusFile>?> GetFileMetadataAsync(IEnumerable<int>? fileIds = null,
+    public async Task<List<HydrusFile>> GetFileMetadataAsync(IEnumerable<int>? fileIds = null,
         IEnumerable<string>? hashes = null)
     {
         var query = new Dictionary<string, object>();
@@ -296,7 +296,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
         var response = await httpClient.GetAsync($"get_files/file_metadata?{queryString}");
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<List<HydrusFile>>();
+        return await response.ReadFromHydrusJsonAsync<List<HydrusFile>>();
     }
 
     /// <summary>
@@ -305,7 +305,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="tags">List of tags to search for.</param>
     /// <param name="fileDomain">File domain to search in.</param>
     /// <returns>A list of file IDs that match the search criteria.</returns>
-    public async Task<List<int>?> SearchFilesAsync(IEnumerable<string> tags, string fileDomain = "all my files")
+    public async Task<List<int>> SearchFilesAsync(IEnumerable<string> tags, string fileDomain = "all my files")
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -317,9 +317,9 @@ public sealed class HydrusFileManager(HttpClient httpClient)
             $"get_files/search_files?tags={Uri.EscapeDataString(JsonSerializer.Serialize(tags))}&file_domain={Uri.EscapeDataString(fileDomain)}");
 
         response.EnsureSuccessStatusCode();
-        var searchResult = await response.Content.ReadFromJsonAsync<SearchFilesResult>();
+        var searchResult = await response.ReadFromHydrusJsonAsync<SearchFilesResult>();
 
-        return searchResult?.FileIds;
+        return searchResult.FileIds;
     }
 
     private class SearchFilesResult
@@ -388,7 +388,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// </summary>
     /// <param name="path">The file path to generate hashes for.</param>
     /// <returns>A dictionary containing different types of hashes.</returns>
-    public async Task<Dictionary<string, object>?> GenerateHashesAsync(string path)
+    public async Task<Dictionary<string, object>> GenerateHashesAsync(string path)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -398,7 +398,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
         var response = await httpClient.PostAsJsonAsync("add_files/generate_hashes", requestContent);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+        return await response.ReadFromHydrusJsonAsync<Dictionary<string, object>>();
     }
 
     /// <summary>
@@ -407,7 +407,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="fileId">The numerical file ID.</param>
     /// <param name="hash">The SHA256 hash of the file.</param>
     /// <returns>The file path.</returns>
-    public async Task<string?> GetFilePathAsync(int? fileId = null, string? hash = null)
+    public async Task<string> GetFilePathAsync(int? fileId = null, string? hash = null)
     {
         if ((fileId == null && hash == null) || (fileId != null && hash != null))
         {
@@ -425,9 +425,9 @@ public sealed class HydrusFileManager(HttpClient httpClient)
 
         var response = await httpClient.GetAsync($"get_files/file_path?{query}");
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<FilePathResult>();
+        var result = await response.ReadFromHydrusJsonAsync<FilePathResult>();
 
-        return result?.Path;
+        return result.Path;
     }
 
     private class FilePathResult
@@ -445,7 +445,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
     /// <param name="fileIds">List of file IDs.</param>
     /// <param name="hashes">List of file hashes.</param>
     /// <returns>A dictionary mapping file hashes to their relationships.</returns>
-    public async Task<Dictionary<string, HydrusFileRelationship>?> GetFileRelationshipsAsync(
+    public async Task<Dictionary<string, HydrusFileRelationship>> GetFileRelationshipsAsync(
         IEnumerable<int>? fileIds = null,
         IEnumerable<string>? hashes = null)
     {
@@ -470,7 +470,7 @@ public sealed class HydrusFileManager(HttpClient httpClient)
 
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadFromJsonAsync<Dictionary<string, HydrusFileRelationship>>();
+        return await response.ReadFromHydrusJsonAsync<Dictionary<string, HydrusFileRelationship>>();
     }
 
     /// <summary>
