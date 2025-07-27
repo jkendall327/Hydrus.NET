@@ -236,7 +236,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["delete_after_successful_import"] = deleteAfterSuccess
         };
 
-        var response = await client.PostAsJsonAsync("add_files/add_file", requestContent, cancellationToken);
+        var response = await client.PostAsJsonAsync(Constants.ADD_FILE, requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
         return await response.ReadFromHydrusJsonAsync<HydrusFile>(token: cancellationToken);
@@ -259,8 +259,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_files/delete_files", requestContent, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        var response = await client.PostToHydrusAsync(Constants.DELETE_FILES, requestContent, cancellationToken);
     }
 
     /// <summary>
@@ -280,7 +279,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_files/undelete_files", requestContent, cancellationToken);
+        var response = await client.PostAsJsonAsync(Constants.UNDELETE_FILES, requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -307,14 +306,7 @@ public sealed class HydrusFileManager(HttpClient client)
             query["hashes"] = hashes;
         }
 
-        var queryString = string.Join("&",
-            query.Select(kvp =>
-                $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(JsonSerializer.Serialize(kvp.Value))}"));
-
-        var response = await client.GetAsync($"get_files/file_metadata?{queryString}", cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        return await response.ReadFromHydrusJsonAsync<List<HydrusFile>>(token: cancellationToken);
+        return await client.GetFromHydrusAsync<List<HydrusFile>>(Constants.FILE_METADATA, query, cancellationToken);
     }
 
     /// <summary>
@@ -328,20 +320,15 @@ public sealed class HydrusFileManager(HttpClient client)
         string fileDomain = "all my files",
         CancellationToken cancellationToken = default)
     {
-        var requestContent = new Dictionary<string, object>
+        var request = new Dictionary<string, object>
         {
             ["tags"] = tags,
             ["file_domain"] = fileDomain
         };
+        
+        var result = await client.GetFromHydrusAsync<SearchFilesResult>(Constants.FILE_METADATA, request, cancellationToken);
 
-        var response = await client.GetAsync(
-            $"get_files/search_files?tags={Uri.EscapeDataString(JsonSerializer.Serialize(tags))}&file_domain={Uri.EscapeDataString(fileDomain)}",
-            cancellationToken);
-
-        response.EnsureSuccessStatusCode();
-        var searchResult = await response.ReadFromHydrusJsonAsync<SearchFilesResult>(token: cancellationToken);
-
-        return searchResult.FileIds;
+        return result.FileIds;
     }
 
     private class SearchFilesResult
@@ -421,10 +408,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["path"] = path
         };
 
-        var response = await client.PostAsJsonAsync("add_files/generate_hashes", requestContent, cancellationToken);
-        response.EnsureSuccessStatusCode();
-
-        return await response.ReadFromHydrusJsonAsync<Dictionary<string, object>>(token: cancellationToken);
+        return await client.GetFromHydrusAsync<Dictionary<string, object>>(Constants.GENERATE_HASHES, requestContent, cancellationToken);
     }
 
     /// <summary>
@@ -492,17 +476,10 @@ public sealed class HydrusFileManager(HttpClient client)
             query["hashes"] = hashes;
         }
 
-        var queryString = string.Join("&",
-            query.Select(kvp =>
-                $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(JsonSerializer.Serialize(kvp.Value))}"));
-
-        var response = await client.GetAsync($"{Constants.GET_FILE_RELATIONSHIPS}?{queryString}",
+        return await client.GetFromHydrusAsync<Dictionary<string, HydrusFileRelationship>>(
+            Constants.GET_FILE_RELATIONSHIPS,
+            query,
             cancellationToken);
-
-        response.EnsureSuccessStatusCode();
-
-        return await response.ReadFromHydrusJsonAsync<Dictionary<string, HydrusFileRelationship>>(
-            token: cancellationToken);
     }
 
     /// <summary>
