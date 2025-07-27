@@ -9,7 +9,7 @@ internal static class HttpExtensions
         T content,
         CancellationToken token)
     {
-        var response = await client.PostAsJsonAsync("manage_file_relationships/set_file_relationships", content, cancellationToken: token);
+        var response = await client.PostAsJsonAsync(url, content, cancellationToken: token);
 
         response.EnsureSuccessStatusCode();
 
