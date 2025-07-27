@@ -32,6 +32,11 @@ internal class CookieJsonConverter : JsonConverter<HydrusCookie>
         var expiration = reader.GetDouble();
         reader.Read(); // consume EndArray
 
+        if (name is null || value is null ||  domain is null || path is null)
+        {
+            throw new NotImplementedException("Write an error here");
+        }
+        
         return new(name, value, domain, path, expiration);
     }
 

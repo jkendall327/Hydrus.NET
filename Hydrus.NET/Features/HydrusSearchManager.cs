@@ -1,6 +1,6 @@
 namespace Hydrus.NET;
 
-public class HydrusSearchManager
+public class HydrusSearchManager(HttpClient client)
 {
     
 }

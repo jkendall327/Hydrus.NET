@@ -3,10 +3,10 @@ namespace Hydrus.NET;
 public class HydrusError
 {
     [JsonPropertyName("error")]
-    public string Error { get; set; }
+    public required string Error { get; set; }
 
     [JsonPropertyName("exception_type")]
-    public string ExceptionType { get; set; }
+    public required string ExceptionType { get; set; }
 
     [JsonPropertyName("status_code")]
     public int StatusCode { get; set; }

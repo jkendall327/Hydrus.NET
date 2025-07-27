@@ -31,8 +31,8 @@ public class HydrusClient
         _httpClient = httpClient;
 
         Client = new(_httpClient);
-        //Searches = new(_httpClient);
-        // Files = new(httpClient);
+        Searches = new(_httpClient);
+        Files = new(httpClient);
         Cookies = new(_httpClient);
         Headers = new(_httpClient);
         Notes = new(_httpClient);
@@ -41,7 +41,7 @@ public class HydrusClient
         Ratings = new(_httpClient);
         Relationships = new(_httpClient);
         Services = new(_httpClient);
-        //Tags = new(_httpClient);
+        Tags = new(_httpClient);
         Times = new(_httpClient);
         Urls = new(_httpClient);
     }
