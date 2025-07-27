@@ -10,7 +10,7 @@ public class HydrusFiles
     public string? Hash { get; set; }
     public string[]? Hashes { get; set; }
 
-    public Dictionary<string, object> ToDictionary()
+    internal Dictionary<string, object> ToDictionary()
     {
         var requestContent = new Dictionary<string, object>();
         
@@ -35,5 +35,28 @@ public class HydrusFiles
         }
 
         return requestContent;
+    }
+
+    internal void AddToDictionary(Dictionary<string, object> dict)
+    {
+        if (FileId.HasValue)
+        {
+            dict["file_id"] = FileId.Value;
+        }
+
+        if (FileIds != null)
+        {
+            dict["file_ids"] = FileIds;
+        }
+
+        if (Hash != null)
+        {
+            dict["hash"] = Hash;
+        }
+
+        if (Hashes != null)
+        {
+            dict["hashes"] = Hashes;
+        }
     }
 }

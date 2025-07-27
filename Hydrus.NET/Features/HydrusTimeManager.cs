@@ -32,25 +32,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
             { "viewtime", viewtime }
         };
 
-        if (files.FileId.HasValue)
-        {
-            requestBody["file_id"] = files.FileId.Value;
-        }
-
-        if (files.FileIds != null)
-        {
-            requestBody["file_ids"] = files.FileIds;
-        }
-
-        if (files.Hash != null)
-        {
-            requestBody["hash"] = files.Hash;
-        }
-
-        if (files.Hashes != null)
-        {
-            requestBody["hashes"] = files.Hashes;
-        }
+        files.AddToDictionary(requestBody);
 
         if (timestamp.HasValue)
         {
@@ -95,25 +77,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
             { "viewtime", viewtime }
         };
 
-        if (files.FileId.HasValue)
-        {
-            requestBody["file_id"] = files.FileId.Value;
-        }
-
-        if (files.FileIds != null)
-        {
-            requestBody["file_ids"] = files.FileIds;
-        }
-
-        if (files.Hash != null)
-        {
-            requestBody["hash"] = files.Hash;
-        }
-
-        if (files.Hashes != null)
-        {
-            requestBody["hashes"] = files.Hashes;
-        }
+        files.AddToDictionary(requestBody);
 
         if (timestamp.HasValue)
         {
@@ -153,25 +117,7 @@ public sealed class HydrusTimeManager(HttpClient httpClient)
             { "timestamp_type", timestampType }
         };
 
-        if (files.FileId.HasValue)
-        {
-            requestBody["file_id"] = files.FileId.Value;
-        }
-
-        if (files.FileIds != null)
-        {
-            requestBody["file_ids"] = files.FileIds;
-        }
-
-        if (files.Hash != null)
-        {
-            requestBody["hash"] = files.Hash;
-        }
-
-        if (files.Hashes != null)
-        {
-            requestBody["hashes"] = files.Hashes;
-        }
+        files.AddToDictionary(requestBody);
 
         if (timestamp.HasValue)
         {

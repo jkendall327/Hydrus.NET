@@ -75,36 +75,17 @@ public sealed class HydrusRelationshipManager(HttpClient client)
     public async Task<HydrusFileRelationshipsResponse> GetFileRelationshipsAsync(HydrusFiles files,
         string? fileServiceKey = null)
     {
-        var queryParams = new List<string>();
-
-        if (files.FileId.HasValue)
-        {
-            queryParams.Add($"file_id={files.FileId.Value}");
-        }
-
-        if (files.FileIds != null)
-        {
-            queryParams.Add(
-                $"file_ids={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(files.FileIds))}");
-        }
-
-        if (files.Hash != null)
-        {
-            queryParams.Add($"hash={Uri.EscapeDataString(files.Hash)}");
-        }
-
-        if (files.Hashes != null)
-        {
-            queryParams.Add($"hashes={Uri.EscapeDataString(System.Text.Json.JsonSerializer.Serialize(files.Hashes))}");
-        }
+        var queryParams = files.ToDictionary();
 
         if (fileServiceKey != null)
         {
-            queryParams.Add($"file_service_key={Uri.EscapeDataString(fileServiceKey)}");
+            queryParams.Add("file_service_key", Uri.EscapeDataString(fileServiceKey));
         }
 
         var url = $"manage_file_relationships/get_file_relationships?{string.Join("&", queryParams)}";
+        
         var response = await client.GetAsync(url);
+        
         response.EnsureSuccessStatusCode();
 
         return await response.ReadFromHydrusJsonAsync<HydrusFileRelationshipsResponse>();
@@ -295,32 +276,11 @@ public sealed class HydrusRelationshipManager(HttpClient client)
     /// Remove all potential pairs that any of the given files are a part of.
     /// </summary>
     /// <param name="files">File identifiers to remove potentials for</param>
-    public async Task RemovePotentialsAsync(HydrusFiles files)
+    public async Task RemovePotentialsAsync(HydrusFiles files, CancellationToken cancellationToken = default)
     {
-        var requestContent = new Dictionary<string, object>();
+        var request = files.ToDictionary();
 
-        if (files.FileId.HasValue)
-        {
-            requestContent["file_id"] = files.FileId.Value;
-        }
-
-        if (files.FileIds != null)
-        {
-            requestContent["file_ids"] = files.FileIds;
-        }
-
-        if (files.Hash != null)
-        {
-            requestContent["hash"] = files.Hash;
-        }
-
-        if (files.Hashes != null)
-        {
-            requestContent["hashes"] = files.Hashes;
-        }
-
-        var response = await client.PostAsJsonAsync("manage_file_relationships/remove_potentials", requestContent);
-        response.EnsureSuccessStatusCode();
+        await client.PostToHydrusAsync("manage_file_relationships/remove_potentials", request, cancellationToken);
     }
 
     /// <summary>

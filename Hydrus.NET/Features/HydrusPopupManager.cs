@@ -144,28 +144,7 @@ public class HydrusPopupManager
             requestContent["files_label"] = filesLabel;
         }
 
-        if (files != null)
-        {
-            if (files.FileId.HasValue)
-            {
-                requestContent["file_id"] = files.FileId.Value;
-            }
-
-            if (files.FileIds != null)
-            {
-                requestContent["file_ids"] = files.FileIds;
-            }
-
-            if (files.Hash != null)
-            {
-                requestContent["hash"] = files.Hash;
-            }
-
-            if (files.Hashes != null)
-            {
-                requestContent["hashes"] = files.Hashes;
-            }
-        }
+        files?.AddToDictionary(requestContent);
 
         var response = await _httpClient.PostAsJsonAsync("manage_popups/add_popup", requestContent);
         response.EnsureSuccessStatusCode();
@@ -307,28 +286,7 @@ public class HydrusPopupManager
             requestContent["files_label"] = filesLabel;
         }
 
-        if (files != null)
-        {
-            if (files.FileId.HasValue)
-            {
-                requestContent["file_id"] = files.FileId.Value;
-            }
-
-            if (files.FileIds != null)
-            {
-                requestContent["file_ids"] = files.FileIds;
-            }
-
-            if (files.Hash != null)
-            {
-                requestContent["hash"] = files.Hash;
-            }
-
-            if (files.Hashes != null)
-            {
-                requestContent["hashes"] = files.Hashes;
-            }
-        }
+        files?.AddToDictionary(requestContent);
 
         var response = await _httpClient.PostAsJsonAsync("manage_popups/update_popup", requestContent);
         response.EnsureSuccessStatusCode();
