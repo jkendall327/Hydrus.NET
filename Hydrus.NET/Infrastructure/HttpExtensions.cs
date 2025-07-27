@@ -17,11 +17,11 @@ internal static class HttpExtensions
     }
 
     internal static async Task<T> ReadFromHydrusJsonAsync<T>(this HttpResponseMessage response,
-        JsonSerializerOptions? options = null)
+        JsonSerializerOptions? options = null, CancellationToken token = default)
     {
         if (!response.IsSuccessStatusCode)
         {
-            var error = await response.Content.ReadFromJsonAsync<HydrusError>();
+            var error = await response.Content.ReadFromJsonAsync<HydrusError>(cancellationToken: token);
 
             if (error is null)
             {
@@ -31,7 +31,7 @@ internal static class HttpExtensions
             throw new HydrusException(error.ExceptionType, error.Error);
         }
 
-        var result = await response.Content.ReadFromJsonAsync<T>(options);
+        var result = await response.Content.ReadFromJsonAsync<T>(options, cancellationToken: token);
 
         if (result is null)
         {

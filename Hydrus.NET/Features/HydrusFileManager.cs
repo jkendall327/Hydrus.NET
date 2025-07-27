@@ -125,10 +125,12 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <param name="hash">The SHA256 hash of the file in hexadecimal.</param>
     /// <param name="tags">Dictionary mapping service keys to lists of tags.</param>
     /// <param name="preventSpaceTags">Whether to block any tags intended for namespaces.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>The tags that were actually added or deleted.</returns>
     public async Task<HydrusTagChanges> SetTagsAsync(string hash,
         Dictionary<string, List<string>> tags,
-        bool? preventSpaceTags = null)
+        bool? preventSpaceTags = null,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -141,10 +143,10 @@ public sealed class HydrusFileManager(HttpClient client)
             requestContent["prevent_space_tags"] = preventSpaceTags.Value;
         }
 
-        var response = await client.PostAsJsonAsync("add_tags/add_tags", requestContent);
+        var response = await client.PostAsJsonAsync("add_tags/add_tags", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>();
+        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>(token: cancellationToken);
     }
 
     /// <summary>
@@ -153,10 +155,12 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <param name="fileId">The numerical ID of the file.</param>
     /// <param name="tags">Dictionary mapping service keys to lists of tags.</param>
     /// <param name="preventSpaceTags">Whether to block any tags intended for namespaces.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>The tags that were actually added or deleted.</returns>
     public async Task<HydrusTagChanges> SetTagsAsync(int fileId,
         Dictionary<string, List<string>> tags,
-        bool? preventSpaceTags = null)
+        bool? preventSpaceTags = null,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -169,10 +173,10 @@ public sealed class HydrusFileManager(HttpClient client)
             requestContent["prevent_space_tags"] = preventSpaceTags.Value;
         }
 
-        var response = await client.PostAsJsonAsync("add_tags/add_tags", requestContent);
+        var response = await client.PostAsJsonAsync("add_tags/add_tags", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>();
+        return await response.ReadFromHydrusJsonAsync<HydrusTagChanges>(token: cancellationToken);
     }
 
     /// <summary>
@@ -180,8 +184,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="hash">The SHA256 hash of the file in hexadecimal.</param>
     /// <param name="serviceKeys">List of service keys for tags to delete.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the delete operation.</returns>
-    public async Task DeleteTagsAsync(string hash, IEnumerable<string> serviceKeys)
+    public async Task DeleteTagsAsync(string hash,
+        IEnumerable<string> serviceKeys,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -189,7 +196,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent);
+        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -198,8 +205,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="fileId">The numerical ID of the file.</param>
     /// <param name="serviceKeys">List of service keys for tags to delete.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the delete operation.</returns>
-    public async Task DeleteTagsAsync(int fileId, IEnumerable<string> serviceKeys)
+    public async Task DeleteTagsAsync(int fileId,
+        IEnumerable<string> serviceKeys,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -207,18 +217,20 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent);
+        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
-    // Existing methods...
     /// <summary>
     /// Add a file using its path.
     /// </summary>
     /// <param name="path">The file path to import.</param>
     /// <param name="deleteAfterSuccess">Whether to delete the source file after successful import.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>The imported file's information.</returns>
-    public async Task<HydrusFile> AddFileAsync(string path, bool deleteAfterSuccess = false)
+    public async Task<HydrusFile> AddFileAsync(string path,
+        bool deleteAfterSuccess = false,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -226,10 +238,10 @@ public sealed class HydrusFileManager(HttpClient client)
             ["delete_after_successful_import"] = deleteAfterSuccess
         };
 
-        var response = await client.PostAsJsonAsync("add_files/add_file", requestContent);
+        var response = await client.PostAsJsonAsync("add_files/add_file", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<HydrusFile>();
+        return await response.ReadFromHydrusJsonAsync<HydrusFile>(token: cancellationToken);
     }
 
     /// <summary>
@@ -237,8 +249,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="hash">The SHA256 hash of the file.</param>
     /// <param name="serviceKeys">List of service keys to delete from.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the delete operation.</returns>
-    public async Task DeleteFileAsync(string hash, IEnumerable<string> serviceKeys)
+    public async Task DeleteFileAsync(string hash,
+        IEnumerable<string> serviceKeys,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -246,7 +261,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_files/delete_files", requestContent);
+        var response = await client.PostAsJsonAsync("add_files/delete_files", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -255,8 +270,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="hash">The SHA256 hash of the file.</param>
     /// <param name="serviceKeys">List of service keys to undelete to.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the undelete operation.</returns>
-    public async Task UndeleteFileAsync(string hash, IEnumerable<string> serviceKeys)
+    public async Task UndeleteFileAsync(string hash,
+        IEnumerable<string> serviceKeys,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -264,7 +282,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_files/undelete_files", requestContent);
+        var response = await client.PostAsJsonAsync("add_files/undelete_files", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
     }
 
@@ -273,9 +291,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="fileIds">List of file IDs.</param>
     /// <param name="hashes">List of file hashes.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A list of file metadata.</returns>
     public async Task<List<HydrusFile>> GetFileMetadataAsync(IEnumerable<int>? fileIds = null,
-        IEnumerable<string>? hashes = null)
+        IEnumerable<string>? hashes = null,
+        CancellationToken cancellationToken = default)
     {
         var query = new Dictionary<string, object>();
 
@@ -293,10 +313,10 @@ public sealed class HydrusFileManager(HttpClient client)
             query.Select(kvp =>
                 $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(JsonSerializer.Serialize(kvp.Value))}"));
 
-        var response = await client.GetAsync($"get_files/file_metadata?{queryString}");
+        var response = await client.GetAsync($"get_files/file_metadata?{queryString}", cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<List<HydrusFile>>();
+        return await response.ReadFromHydrusJsonAsync<List<HydrusFile>>(token: cancellationToken);
     }
 
     /// <summary>
@@ -304,8 +324,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="tags">List of tags to search for.</param>
     /// <param name="fileDomain">File domain to search in.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A list of file IDs that match the search criteria.</returns>
-    public async Task<List<int>> SearchFilesAsync(IEnumerable<string> tags, string fileDomain = "all my files")
+    public async Task<List<int>> SearchFilesAsync(IEnumerable<string> tags,
+        string fileDomain = "all my files",
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
@@ -314,10 +337,11 @@ public sealed class HydrusFileManager(HttpClient client)
         };
 
         var response = await client.GetAsync(
-            $"get_files/search_files?tags={Uri.EscapeDataString(JsonSerializer.Serialize(tags))}&file_domain={Uri.EscapeDataString(fileDomain)}");
+            $"get_files/search_files?tags={Uri.EscapeDataString(JsonSerializer.Serialize(tags))}&file_domain={Uri.EscapeDataString(fileDomain)}",
+            cancellationToken);
 
         response.EnsureSuccessStatusCode();
-        var searchResult = await response.ReadFromHydrusJsonAsync<SearchFilesResult>();
+        var searchResult = await response.ReadFromHydrusJsonAsync<SearchFilesResult>(token: cancellationToken);
 
         return searchResult.FileIds;
     }
@@ -335,12 +359,14 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <param name="renderQuality">The quality/compression level of the rendered file.</param>
     /// <param name="width">The width to scale the image to.</param>
     /// <param name="height">The height to scale the image to.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>The rendered file as a byte array.</returns>
     public async Task<byte[]> RenderFileAsync(string hash,
         int? renderFormat = null,
         int? renderQuality = null,
         int? width = null,
-        int? height = null)
+        int? height = null,
+        CancellationToken cancellationToken = default)
     {
         var query = new Dictionary<string, object>
         {
@@ -377,28 +403,30 @@ public sealed class HydrusFileManager(HttpClient client)
                 return $"{key}={Uri.EscapeDataString(value)}";
             }));
 
-        var response = await client.GetAsync($"get_files/render?{queryString}");
+        var response = await client.GetAsync($"get_files/render?{queryString}", cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.Content.ReadAsByteArrayAsync();
+        return await response.Content.ReadAsByteArrayAsync(cancellationToken);
     }
 
     /// <summary>
     /// Generate hashes for a file.
     /// </summary>
     /// <param name="path">The file path to generate hashes for.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A dictionary containing different types of hashes.</returns>
-    public async Task<Dictionary<string, object>> GenerateHashesAsync(string path)
+    public async Task<Dictionary<string, object>> GenerateHashesAsync(string path,
+        CancellationToken cancellationToken = default)
     {
         var requestContent = new Dictionary<string, object>
         {
             ["path"] = path
         };
 
-        var response = await client.PostAsJsonAsync("add_files/generate_hashes", requestContent);
+        var response = await client.PostAsJsonAsync("add_files/generate_hashes", requestContent, cancellationToken);
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<Dictionary<string, object>>();
+        return await response.ReadFromHydrusJsonAsync<Dictionary<string, object>>(token: cancellationToken);
     }
 
     /// <summary>
@@ -406,8 +434,11 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="fileId">The numerical file ID.</param>
     /// <param name="hash">The SHA256 hash of the file.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>The file path.</returns>
-    public async Task<string> GetFilePathAsync(int? fileId = null, string? hash = null)
+    public async Task<string> GetFilePathAsync(int? fileId = null,
+        string? hash = null,
+        CancellationToken cancellationToken = default)
     {
         if ((fileId == null && hash == null) || (fileId != null && hash != null))
         {
@@ -423,9 +454,9 @@ public sealed class HydrusFileManager(HttpClient client)
 
         string query = fileId != null ? $"file_id={fileId.Value}" : $"hash={escaped}";
 
-        var response = await client.GetAsync($"get_files/file_path?{query}");
+        var response = await client.GetAsync($"get_files/file_path?{query}", cancellationToken);
         response.EnsureSuccessStatusCode();
-        var result = await response.ReadFromHydrusJsonAsync<FilePathResult>();
+        var result = await response.ReadFromHydrusJsonAsync<FilePathResult>(token: cancellationToken);
 
         return result.Path;
     }
@@ -444,10 +475,12 @@ public sealed class HydrusFileManager(HttpClient client)
     /// </summary>
     /// <param name="fileIds">List of file IDs.</param>
     /// <param name="hashes">List of file hashes.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A dictionary mapping file hashes to their relationships.</returns>
-    public async Task<Dictionary<string, HydrusFileRelationship>> GetFileRelationshipsAsync(
-        IEnumerable<int>? fileIds = null,
-        IEnumerable<string>? hashes = null)
+    public async Task<Dictionary<string, HydrusFileRelationship>> GetFileRelationshipsAsync(IEnumerable<int>? fileIds =
+            null,
+        IEnumerable<string>? hashes = null,
+        CancellationToken cancellationToken = default)
     {
         var query = new Dictionary<string, object>();
 
@@ -465,12 +498,13 @@ public sealed class HydrusFileManager(HttpClient client)
             query.Select(kvp =>
                 $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(JsonSerializer.Serialize(kvp.Value))}"));
 
-        var response =
-            await client.GetAsync($"manage_file_relationships/get_file_relationships?{queryString}");
+        var response = await client.GetAsync($"manage_file_relationships/get_file_relationships?{queryString}",
+            cancellationToken);
 
         response.EnsureSuccessStatusCode();
 
-        return await response.ReadFromHydrusJsonAsync<Dictionary<string, HydrusFileRelationship>>();
+        return await response.ReadFromHydrusJsonAsync<Dictionary<string, HydrusFileRelationship>>(
+            token: cancellationToken);
     }
 
     /// <summary>
@@ -482,6 +516,7 @@ public sealed class HydrusFileManager(HttpClient client)
     /// <param name="doDefaultContentMerge">Whether to perform default content merge.</param>
     /// <param name="deleteA">Whether to delete the first file.</param>
     /// <param name="deleteB">Whether to delete the second file.</param>
+    /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task representing the set operation.</returns>
     public async Task SetFileRelationshipsAsync(string hashA,
         string hashB,
