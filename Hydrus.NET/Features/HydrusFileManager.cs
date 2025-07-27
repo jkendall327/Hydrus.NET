@@ -196,8 +196,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await client.PostToHydrusAsync(Constants.DELETE_TAGS, requestContent, cancellationToken);
     }
 
     /// <summary>
@@ -217,8 +216,7 @@ public sealed class HydrusFileManager(HttpClient client)
             ["service_keys"] = serviceKeys
         };
 
-        var response = await client.PostAsJsonAsync("add_tags/delete_tags", requestContent, cancellationToken);
-        response.EnsureSuccessStatusCode();
+        await client.PostToHydrusAsync(Constants.DELETE_TAGS, requestContent, cancellationToken);
     }
 
     /// <summary>
@@ -498,7 +496,7 @@ public sealed class HydrusFileManager(HttpClient client)
             query.Select(kvp =>
                 $"{Uri.EscapeDataString(kvp.Key)}={Uri.EscapeDataString(JsonSerializer.Serialize(kvp.Value))}"));
 
-        var response = await client.GetAsync($"manage_file_relationships/get_file_relationships?{queryString}",
+        var response = await client.GetAsync($"{Constants.GET_FILE_RELATIONSHIPS}?{queryString}",
             cancellationToken);
 
         response.EnsureSuccessStatusCode();

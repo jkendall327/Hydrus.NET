@@ -82,7 +82,7 @@ public sealed class HydrusRelationshipManager(HttpClient client)
             queryParams.Add("file_service_key", Uri.EscapeDataString(fileServiceKey));
         }
 
-        var url = $"manage_file_relationships/get_file_relationships?{string.Join("&", queryParams)}";
+        var url = $"{Constants.GET_FILE_RELATIONSHIPS}?{string.Join("&", queryParams)}";
         
         var response = await client.GetAsync(url);
         
