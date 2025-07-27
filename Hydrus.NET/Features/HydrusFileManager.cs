@@ -374,7 +374,7 @@ public sealed class HydrusFileManager(HttpClient client)
                 return $"{key}={Uri.EscapeDataString(value)}";
             }));
 
-        var response = await client.GetAsync($"get_files/render?{queryString}", cancellationToken);
+        var response = await client.GetAsync($"{Constants.RENDER}?{queryString}", cancellationToken);
         response.EnsureSuccessStatusCode();
 
         return await response.Content.ReadAsByteArrayAsync(cancellationToken);

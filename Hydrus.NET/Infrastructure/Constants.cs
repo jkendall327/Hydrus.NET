@@ -13,4 +13,5 @@ internal static class Constants
     internal const string FILE_METADATA = "get_files/file_metadata";
     internal const string SEARCH_FILES = "get_files/search_files";
     internal const string GENERATE_HASHES = "add_files/generate_hashes";
+    internal const string RENDER = "get_files/render";
 }
