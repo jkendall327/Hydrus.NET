@@ -30,7 +30,7 @@ public sealed class HydrusHeaderManager(HttpClient httpClient)
     /// <param name="domain">Optional domain to get headers for. If not provided, returns global headers.</param>
     public async Task<HydrusHeadersResponse> GetHeadersAsync(string? domain = null)
     {
-        var url = "manage_headers/get_headers";
+        var url = Constants.GET_HEADERS;
 
         if (!string.IsNullOrEmpty(domain))
         {
@@ -53,7 +53,7 @@ public sealed class HydrusHeaderManager(HttpClient httpClient)
         CancellationToken cancellationToken = default)
     {
         var request = new HydrusSetHeadersRequest(domain, headers);
-        await httpClient.PostToHydrusAsync("manage_headers/set_headers", request, cancellationToken);
+        await httpClient.PostToHydrusAsync(Constants.SET_HEADERS, request, cancellationToken);
     }
 
     /// <summary>
@@ -64,6 +64,6 @@ public sealed class HydrusHeaderManager(HttpClient httpClient)
     public async Task SetUserAgentAsync(string userAgent, CancellationToken cancellationToken = default)
     {
         var request = new HydrusSetUserAgentRequest(userAgent);
-        await httpClient.PostToHydrusAsync("manage_headers/set_user_agent", request, cancellationToken);
+        await httpClient.PostToHydrusAsync(Constants.SET_USER_AGENT, request, cancellationToken);
     }
 }
