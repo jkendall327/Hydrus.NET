@@ -15,7 +15,6 @@ public sealed class HydrusContainerFixture : IAsyncLifetime
         // Build the container
         Container = new ContainerBuilder()
             .WithImage("ghcr.io/hydrusnetwork/hydrus:latest")
-            .WithName("hydrusclient") // static container name
             .WithExposedPort(45869)
             .Build();
 
