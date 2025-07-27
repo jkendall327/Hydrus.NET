@@ -1,4 +1,5 @@
 using DotNet.Testcontainers.Builders;
+using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +18,7 @@ public sealed class HydrusContainerFixture : IAsyncLifetime
             .WithImage("ghcr.io/hydrusnetwork/hydrus:latest")
             .WithExposedPort(45869)
             .Build();
-
+        
         await Container.StartAsync();
     }
     
@@ -42,6 +43,20 @@ public sealed class HydrusContainerFixture : IAsyncLifetime
         return client;
     }
 
+    public async Task<string> CreateFileInContainerAsync(byte[] bytes, string filename, CancellationToken cancellationToken = default)
+    {
+        var tempDir = Path.GetTempPath();
+        var jpegPath = Path.Combine(tempDir, filename);
+        
+        await File.WriteAllBytesAsync(jpegPath, bytes, cancellationToken);
+        
+        var containerPath = $"/tmp/{filename}";
+
+        await Container.CopyAsync(jpegPath, containerPath, UnixFileModes.UserRead, cancellationToken);
+
+        return containerPath;
+    }
+    
     private string GetBaseUrl()
     {
         return $"http://{Host}:{Port}/";
