@@ -8,10 +8,7 @@ public class TimingTests(HydrusContainerFixture fixture, ITestOutputHelper helpe
     {
         var client = fixture.CreateClient();
 
-        var file = new HydrusFiles
-        {
-            FileId = 123456
-        };
+        var file = HydrusFiles.Create([12345], []);
 
         helper.WriteLine("Incrementing file view time...");
 
