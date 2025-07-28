@@ -20,8 +20,6 @@ dotnet build
 
 ## Usage
 
-NOTE: the package is not yet on NuGet.
-
 ```
 dotnet add package Hydrus.NET
 ```
