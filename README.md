@@ -8,7 +8,7 @@ Unfinished.
 
 Because it's hard to write meaningful tests for this kind of library, the .Tests projects assume a real running instance of the Hydrus client.
 As such, they don't run in CI at present.
-In the future, I might try to implement 'real' integration tests by spinning up an instance of the client in a container.
+In the future, I might try to implement 'real' integration tests by spinning up an instance of the client in a container. But Hydrus unfortunately does not make this easy.
 
 ## Building
 
@@ -34,13 +34,9 @@ using Hydrus.NET;
 // 'open client api base url' / 'copy api access key'
 var client = new HydrusClient("http://localhost:45869", "your-api-key");
 
-// Import an image into the client from a web URL.
-var url = "https://i.imgur.com/CLu1Svx.jpeg";
+var response = await _sut.Client.GetVersionAsync();
 
-var response = await _sut.Urls.AddUrlAsync(new()
-{
-    Url = url
-});
+Console.WriteLine(response.Version); // 80
 ```
 
 ## Design
