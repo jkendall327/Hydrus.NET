@@ -17,6 +17,17 @@ internal static class HttpExtensions
         return response;
     }
     
+    internal static async Task<HttpResponseMessage> PostToHydrusAsync(this HttpClient client,
+        string url,
+        CancellationToken token)
+    {
+        var response = await client.PostAsync(url, null, cancellationToken: token);
+
+        response.EnsureSuccessStatusCode();
+
+        return response;
+    }
+    
     internal static async Task<TResponse> GetFromHydrusAsync<TResponse>(this HttpClient client,
         string url,
         CancellationToken token)

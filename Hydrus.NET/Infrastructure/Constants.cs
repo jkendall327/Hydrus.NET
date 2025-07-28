@@ -14,4 +14,9 @@ internal static class Constants
     internal const string SEARCH_FILES = "get_files/search_files";
     internal const string GENERATE_HASHES = "add_files/generate_hashes";
     internal const string RENDER = "get_files/render";
+    internal const string FORCE_COMMIT = "manage_database/force_commit";
+    internal const string LOCK_ON = "manage_database/lock_on";
+    internal const string LOCK_OFF = "manage_database/lock_off";
+    internal const string MR_BONES = "manage_database/mr_bones";
+    internal const string GET_CLIENT_OPTIONS = "manage_database/get_client_options";
 }

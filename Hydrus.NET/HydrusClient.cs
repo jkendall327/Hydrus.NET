@@ -5,9 +5,8 @@ namespace Hydrus.NET;
 /// </summary>
 public class HydrusClient
 {
-    private readonly HttpClient _httpClient;
-    
     public HydrusClientManager Client { get; private set; }
+    public HydrusDatabaseManager Database { get; private set; }
     public HydrusSearchManager Searches { get; private set; }
     public HydrusFileManager Files { get; private set; }
     public HydrusCookieManager Cookies { get; private set; }
@@ -25,25 +24,24 @@ public class HydrusClient
     /// <summary>
     /// Instantiates a new <see cref="HydrusClient"/> with a preconfigured <see cref="HttpClient"/>.
     /// </summary>
-    /// <param name="httpClient">The client to use for HTTP calls to the Hydrus Client API.</param>
-    public HydrusClient(HttpClient httpClient)
+    /// <param name="client">The client to use for HTTP calls to the Hydrus Client API.</param>
+    public HydrusClient(HttpClient client)
     {
-        _httpClient = httpClient;
-
-        Client = new(_httpClient);
-        Searches = new(_httpClient);
-        Files = new(httpClient);
-        Cookies = new(_httpClient);
-        Headers = new(_httpClient);
-        Notes = new(_httpClient);
-        Pages = new(_httpClient);
-        Popups = new(_httpClient);
-        Ratings = new(_httpClient);
-        Relationships = new(_httpClient);
-        Services = new(_httpClient);
-        Tags = new(_httpClient);
-        Times = new(_httpClient);
-        Urls = new(_httpClient);
+        Client = new(client);
+        Database = new(client);
+        Searches = new(client);
+        Files = new(client);
+        Cookies = new(client);
+        Headers = new(client);
+        Notes = new(client);
+        Pages = new(client);
+        Popups = new(client);
+        Ratings = new(client);
+        Relationships = new(client);
+        Services = new(client);
+        Tags = new(client);
+        Times = new(client);
+        Urls = new(client);
     }
 
     /// <summary>
