@@ -13,10 +13,14 @@
         <Version>0.8.0</Version>
         <Authors>Jack Kendall</Authors>
         <Product>Hydrus.NET</Product>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <Copyright>Copyright (c) Jack Kendall 2025</Copyright>
         <Description>A .NET client library for the Hydrus Network Client API</Description>
         <PackageTags>hydrus;hydrus-network;api-client</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/jkendall327/Hydrus.NET</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/jkendall327/Hydrus.NET</RepositoryUrl>
 
         <!-- Package Configuration -->
         <PackageReadmeFile>README.md</PackageReadmeFile>
