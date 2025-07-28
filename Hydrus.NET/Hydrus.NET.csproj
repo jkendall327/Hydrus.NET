@@ -10,7 +10,7 @@
 
         <!-- Package Metadata -->
         <PackageId>Hydrus.NET</PackageId>
-        <Version>0.1.0</Version>
+        <Version>0.8.0</Version>
         <Authors>Jack Kendall</Authors>
         <Product>Hydrus.NET</Product>
         <Description>A .NET client library for the Hydrus Network Client API</Description>
